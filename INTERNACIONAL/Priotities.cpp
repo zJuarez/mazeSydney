@@ -115,7 +115,7 @@ bool Priotities::correctMovementFront(char dir)
     return returningVariable;
 }
 
-void Priotities::changeSquare(Bit *actualSquare, float rightDistance, float leftDistance, float frontDistance, char dir)
+void Priotities::changeSquare(Bit *actualSquare, int rightDistance, int leftDistance, int frontDistance, char dir)
 {
   switch(dir)
     {
@@ -314,26 +314,38 @@ void Priotities::correction(char dir)
     case 'N':
     {
       tile[x][y][z].up(1, &tile[x-1][y][z]);
+
+      if(tile[x-1][y][z].right() == false || tile[x-1][y][z].left() == false || tile[x-1][y][z].down() == false){}
+      else{
       tile[x-1][y][z].exist(0);
-      tile[x-1][y][z].pending(0);
+      tile[x-1][y][z].pending(0);}
     } break;
     case 'E':
     {
       tile[x][y][z].right(1, &tile[x][y+1][z]);
+      
+      if(tile[x][y+1][z].right() == false || tile[x][y+1][z].left() == false || tile[x][y+1][z].down() == false){}
+      else{
       tile[x][y+1][z].exist(0);
-      tile[x][y+1][z].pending(0);
+      tile[x][y+1][z].pending(0);}
     } break;
     case 'W':
     {
       tile[x][y][z].left(1, &tile[x][y-1][z]);
+      
+      if(tile[x][y-1][z].right() == false || tile[x][y-1][z].left() == false || tile[x][y-1][z].down() == false){}
+      else{
       tile[x][y-1][z].exist(0);
-      tile[x][y-1][z].pending(0);
+      tile[x][y-1][z].pending(0);}
     } break;
     case 'S':
     {
       tile[x][y][z].down(1, &tile[x+1][y][z]);
+      
+      if(tile[x+1][y][z].right() == false || tile[x+1][y][z].left() == false || tile[x+1][y][z].down() == false){}
+      else{
       tile[x+1][y][z].exist(0);
-      tile[x+1][y][z].pending(0);
+      tile[x+1][y][z].pending(0);}
     } break;
   }
 }
@@ -498,7 +510,7 @@ void Priotities::dataTransferUpFloor()
 
    z = 3;
 
-   for(int i = 0; i < 50; i++)
+   for(int i = 0; i < 100; i++)
    {
      fFxs[i] = sFxs[i];
      sFxs[i] = tFxs[i];
@@ -527,7 +539,7 @@ void Priotities::dataTransferDownFloor()
 
    z = 0;
 
-   for(int i = 0; i < 50; i++)
+   for(int i = 0; i < 100; i++)
    {
      sFxs[i] = fFxs[i];
      tFxs[i] = sFxs[i];
@@ -539,3 +551,4 @@ void Priotities::dataTransferDownFloor()
    fourthCount = thirdCount;
    firstCount = 0;
 }
+

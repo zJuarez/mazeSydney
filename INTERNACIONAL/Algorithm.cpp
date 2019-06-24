@@ -1,10 +1,99 @@
 #include <Arduino.h>
 #include "Algorithm.h"
 
-Algorithm::Algorithm(){}
+SoftwareSerial cam(50, 51);
+  
+Algorithm::Algorithm(){
+
+}
 
 bool v = true;
+void Algorithm::setup()
+{
+  cam.begin(115200);
 
+}
+
+bool Algorithm::heatVictim()
+{
+    if(sensors.temperatureCelcius(sensors.mlxLeft) > (sensors.firstTemperature + 10))
+      {
+        sensors.motors.detenerse();
+        robot.dispenser.dropOneKitLeft();
+        return true;
+      }
+      if(sensors.temperatureCelcius(sensors.mlxRight) > (sensors.firstTemperature + 10))
+      {
+        sensors.motors.detenerse();
+        robot.dispenser.dropOneKitRight();
+        return true;
+      }
+
+return false;
+  
+}
+
+bool Algorithm::visualVictim()
+{
+
+  inByte =  '0';
+  bool done = false;
+
+    cam.listen();
+    while (cam.available() > 0) {
+    inByte = cam.read();
+    if(inByte == '7' && sensors.getDistanceOf(1) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA S", "IZQUIERDA");
+    sensors.blinkLeds();;
+    return true;}
+    else if(inByte == '8' && sensors.getDistanceOf(1) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA U", "IZQUIERDA");
+    sensors.blinkLeds();;
+    return true;}
+    else if(inByte == '6' && sensors.getDistanceOf(1) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA H", "IZQUIERDA");
+    sensors.blinkLeds();;
+    return true;}
+    /*else if(inByte == '5' && sensors.getDistanceOf(2) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("KIT", "DERECHA");
+    sensors.blinkLeds();;
+    return true;}
+    else if(inByte == '9' && sensors.getDistanceOf(1) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("KIT", "IZQUIERDA");
+    sensors.blinkLeds();;
+    return true;}*/
+    else if(inByte == '4' && sensors.getDistanceOf(2) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA U", "DERECHA");
+    sensors.blinkLeds();;
+    return true;}
+    else if(inByte == '3' && sensors.getDistanceOf(2) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA S", "DERECHA");
+    sensors.blinkLeds();;
+    return true;}
+    else if(inByte == '2' && sensors.getDistanceOf(2) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA H", "DERECHA");
+    sensors.blinkLeds();;
+    return true;}
+    else if(inByte == '1' && sensors.getDistanceOf(2) < 21 && !done){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("BULTO", "BULTO");
+    done = true;}
+    else if(inByte == 'A' && sensors.getDistanceOf(1) < 21 && !done){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("BULTO", "BULTO");
+    done = true;
+    }}
+
+    return false;
+}
 void Algorithm::clear(byte ox, byte oy)
 {
   pointers auxValor;
@@ -100,12 +189,13 @@ void Algorithm::startBfs()
       if(!algorithmVisiteds[firstCost.a-1][firstCost.b] && m4p[firstCost.a-1][firstCost.b] != -1 && m4p[firstCost.a-1][firstCost.b] != 99 && firstCost.a-1 >= 0 && firstCost.a-1 < 15 && firstCost.b >= 0 && firstCost.b < 15  && !robot.tile[firstCost.a][firstCost.b][robot.z].up())
         {
           if(m4p[firstCost.a-1][firstCost.b] == -2){
-            m4p[firstCost.a-1][firstCost.b] = firstCost.node + 10;
-            secondCost.node = firstCost.node + 10;
+          //  m4p[firstCost.a-1][firstCost.b] = firstCost.node + 10;
+           // secondCost.node = firstCost.node + 10;
           }else{
             m4p[firstCost.a-1][firstCost.b] = firstCost.node + 1;
             secondCost.node = firstCost.node + 1;
           }
+          
 
           secondCost.a = firstCost.a-1;
           secondCost.b = firstCost.b;
@@ -398,45 +488,82 @@ void Algorithm::moveForward(bool &perfect)
 {  
   
   sensors.motors.rightCount = 0;
+  
    int bb = 0;
+   uint8_t maxTam = 0;
    int crash = 0;
+   uint8_t tam = 0 ;
    int newTic = sensors.motors.tic1;
    sensors.motors.bT=false;
    sensors.motors.bumperControl=false;
+   bool fT = true;
+   int aux;
+   double diE = sensors.getDistanceOf(3);
+   double diA = sensors.getDistanceOf(4);
+   bool visualV = false;
+   bool heatV = false;
+   bool trueRamp = false;
+   
+if( diE<= 15)
+  {
+    return;
+  }
+  
+if(sensors.motors.bumper(tam))
+{
+  fT=false;
+  newTic+=tam*50;
+  sensors.motors.bumperControl=true;
+  maxTam=tam;
+}
+
+if(visualVictim())
+visualV=true;
+
+if(heatVictim())
+heatV=true;
 
   while(sensors.motors.rightCount < newTic)
     {
-      sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(sensors.echo_I, 1), sensors.getDistanceOf(sensors.echo_D, 2), bb);
 
-     /* if(sensors.motors.cuadroNegro())
-      {
-        reverseRightCount = sensors.motors.rightCount;
-        sensors.motors.rightCount = 0;
-
-        while(sensors.motors.rightCount < reverseRightCount)
-          sensors.motors.atrasPID(sensors.motors.de);
-
-        sensors.motors.rightCount = 1221;
-        sensors.motors.detenerse();
-        delay(1000);
-      }*/
-
-      if(sensors.temperatureCelcius(sensors.mlxLeft) > (sensors.firstTemperature + 10))
-      {
-        sensors.motors.detenerse();
-        robot.dispenser.dropOneKitLeft();
-      }
-      if(sensors.temperatureCelcius(sensors.mlxRight) > (sensors.firstTemperature + 10))
-      {
-        sensors.motors.detenerse();
-        robot.dispenser.dropOneKitRight();
-      }
+      //sensors.motors.escribirLetraLCD(camaraChar);
+      
+      sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(1), sensors.getDistanceOf(2), bb);
 
       value = sensors.motors.rampa(sensors.motors.de);
 
-      if(value != 0)
+if(value!=0){
+  unsigned long timeRamp = millis();
+
+      while(sensors.motors.rampa(sensors.motors.de)==1 || sensors.motors.rampa(sensors.motors.de)==2)
       {
-        robot.tile[robot.x][robot.y][robot.z].ramp(1);
+        
+        if(sensors.motors.rampa(sensors.motors.de)==1)
+       sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(1), sensors.getDistanceOf(2), bb);
+        else
+       sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(1), sensors.getDistanceOf(2), bb);
+
+     if(sensors.motors.rightCount>2900)
+        trueRamp=true;
+        else
+        trueRamp=false;
+      }
+
+if(trueRamp){
+unsigned long te = millis();
+
+while(millis()<(te+400))
+sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(1), sensors.getDistanceOf(2), bb);
+
+sensors.motors.detenerse();
+sensors.motors.setBase(155);
+
+//sensors.motors.actualizaSetPoint(sensors.motors.de);
+//delay(50);
+
+//sensors.motors.actualizaSetPointY();
+
+  robot.tile[robot.x][robot.y][robot.z].ramp(1);
 
         switch(robot.getDirection())
         {
@@ -464,8 +591,21 @@ void Algorithm::moveForward(bool &perfect)
           break;
         }
       }
+}
+    if(!heatV)
+     {
+      if(heatVictim())
+      heatV=true;
+     }
 
-      if(sensors.motors.rightCount<(newTic * 0.7))
+     if(!visualV)
+     {
+      if(visualVictim())
+      visualV=true;
+     }
+     
+     
+      if(sensors.motors.rightCount<(newTic * 0.60))
        {
         if(digitalRead(sensors.motors.pin1)==HIGH)
           {
@@ -473,20 +613,7 @@ void Algorithm::moveForward(bool &perfect)
             sensors.motors.choqueDer(sensors.motors.de, 65);
             sensors.motors.rightCount=0;
           }
-        if(digitalRead(sensors.motors.pin4)==HIGH)
-          {
-            sensors.motors.choqueDer(sensors.motors.de, 40);
-            sensors.motors.rightCount=0;
-            crash++;
-
-          }
-        if(digitalRead(sensors.motors.pin2)==HIGH)
-          {
-            crash++;
-            sensors.motors.choqueDer(sensors.motors.de, 20);
-            sensors.motors.rightCount=0;
-          }
-        if(digitalRead(sensors.motors.pin3)==HIGH)
+          if(digitalRead(sensors.motors.pin3)==HIGH)
           {
             crash++;
             sensors.motors.choqueIzq(sensors.motors.de, 65);
@@ -496,6 +623,18 @@ void Algorithm::moveForward(bool &perfect)
           {
             crash++;
             sensors.motors.choqueIzq(sensors.motors.de, 40);
+            sensors.motors.rightCount=0;
+          }
+        if(digitalRead(sensors.motors.pin4)==HIGH)
+          {
+            sensors.motors.choqueDer(sensors.motors.de, 40);
+            sensors.motors.rightCount=0;
+            crash++;
+          }
+        if(digitalRead(sensors.motors.pin2)==HIGH)
+          {
+            crash++;
+            sensors.motors.choqueDer(sensors.motors.de, 20);
             sensors.motors.rightCount=0;
           }
         if(digitalRead(sensors.motors.pin6)==HIGH)
@@ -516,19 +655,37 @@ void Algorithm::moveForward(bool &perfect)
 
 if(!sensors.motors.bumperControl)
 {
-if(sensors.motors.bumper()){
+if(sensors.motors.bumper(tam)){
 sensors.motors.bumperControl=true;
-newTic+=35;
+maxTam=tam;
 }
 }
+else if(fT)
+{
+sensors.motors.bumper(tam);
+sensors.motors.bumperControl=true;
+if(tam>=maxTam)
+maxTam = tam;
+else if (fT){
+newTic= newTic+maxTam*50;
+fT=false;
+}
+
+}
+
+
 if(crash>3){  //la cagaste
-perfect=false;
+sensors.motors.detenerse();
+//perfect=false;
 return;
 }
 }
   sensors.motors.detenerse();
-  delay(200);
   sensors.motors.checar();
+
+  if(maxTam>=2 && sensors.motors.bumperControl)
+  sensors.acomodo(diE,diA);
+  
   sensors.checkDistances();
 }
 
@@ -537,17 +694,20 @@ void Algorithm::rightTurn()
     robot.changeDirection(1, robot.getDirection());
 
     (sensors.motors.de == 270) ? sensors.motors.de = 0 : sensors.motors.de += 90;
-    sensors.motors.giro(sensors.motors.de, sensors.motors.bumperControl);
+    sensors.motors.giro(sensors.motors.de);
     sensors.motors.detenerse();
-     delay(180);
+     delay(155);
 
     sensors.motors.checar();
 
     //sensors.motors.escribirLetraLCD(robot.getDirection());
     //delay(1000);
 
-    if(sensors.getDistanceOf(sensors.echo_A, 4) <= 21 && !sensors.motors.bumperControl)
+    if(sensors.getDistanceOf(4) <= 21 && !sensors.motors.bumperControl && ((sensors.motors.girosX>2 || sensors.getDistanceOf(3)==0)))
+    {
       sensors.motors.atrasSN();
+      sensors.motors.girosX=0;
+    }
     else
       sensors.motors.girosX++;
 }
@@ -556,16 +716,19 @@ void Algorithm::leftTurn()
 {
     robot.changeDirection(3, robot.getDirection());
     (sensors.motors.de == 0) ? sensors.motors.de = 270 : sensors.motors.de -= 90;
-    sensors.motors.giro(sensors.motors.de, sensors.motors.bumperControl);
+    sensors.motors.giro(sensors.motors.de);
     sensors.motors.detenerse();
-    delay(180);
+    delay(155);
 
     sensors.motors.checar();
 
     //sensors.motors.escribirLetraLCD(robot.getDirection());
 
-    if(sensors.getDistanceOf(sensors.echo_A, 4) <= 21 && !sensors.motors.bumperControl)
-      sensors.motors.atrasSN();
+    if(sensors.getDistanceOf(4) <= 21 && !sensors.motors.bumperControl && (sensors.motors.girosX>2 || sensors.getDistanceOf(3)==0))
+      {sensors.motors.atrasSN();
+      sensors.motors.girosX=0;
+      }
     else
       sensors.motors.girosX++;
 }
+

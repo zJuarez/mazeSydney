@@ -10,7 +10,7 @@ int valorT;
 int bD1=0;
 
 //derecho
-double base =150;
+double base =155;
 double kp=5.43;//2.23
 double ki=0.15;//0.08;
 double kd=0.56;//0.56;
@@ -54,7 +54,7 @@ bool Control::desalineao(double anguloA, double deseado)
 {
   if(deseado==0)
   {
-    double nA = anguloA>=180?anguloA:(360+anguloA);
+    double nA = anguloA>=155?anguloA:(360+anguloA);
 
     if(nA>(360-b) && nA<(360+b))
       return 0;
@@ -117,7 +117,7 @@ return anguloA;
 void Control::actualizaSetPoint(double d)
 {
 double a =getAnguloActual();
-if(d==0 && a>=180)
+if(d==0 && a>=155)
 {
 setPointBNO=setPointBNO-(360-a);
 }
@@ -144,6 +144,7 @@ void Control::setBase(double x)
 {
 base=x;
 }
+
 double Control::y()
 {
   double ye;
@@ -154,74 +155,85 @@ double Control::y()
   return ye;
 }
 
+
 int Control::rampa(double d)
 {
 
-if(y()<-325 && y()>-340)
+if(y()<-320 && y()>-335)
 {
-base=235;
+  
+base=210;
+/*
 lcd.setCursor(0,0);
 lcd.print("Subiendo");
 
 while(y()<-0.5){
-avanzar(d,30,30,bD1);
+avanzar(d,30, 30,bD1);
 }
-base=150;
+base=155;
 
 lcd.clear();
 avanzar(d,30,30,bD1);
-delay(235);
+delay(265);
 detenerse();
-//delay(200);
-
+//delay(155);
+*/
   /*sensors_event_t event;
   bno.getEvent(&event);
   setPointY=event.orientation.z;*/
   
-if(rightCount > 2200){
 bumperControl=false;
-return 1;}
-else {
-return 0;}
+return 1;
 }
-else if(y()<-12 && y()>-35)
+else if(y()<-10 && y()>-35)
 {
 
 base=100;
+/*
 lcd.setCursor(0,0);
 lcd.print("Bajando");
 
 while(y()<-0.4){
 avanzar(d,30,30,bD1);
 }
-base=150;
+base=155;
 
 lcd.clear();
 avanzar(d,30,30,bD1);
-delay(150);
+delay(170);
 detenerse();
 //delay(300);
-
+*/
 /*sensors_event_t event;
 bno.getEvent(&event);
 setPointY=event.orientation.z;*/
-if(rightCount > 2200){
 bumperControl=false;
-return 2;}
-else {
-return 0;}
+return 2;
 }
 else
 return 0;
 }
 
-bool Control::bumper()
+bool Control::bumper(uint8_t &x)
 {
 double val = y();
-if((val<-357 && val>-340) || (val<-3 && val>-15))
+if((val<-358 && val>-340) || (val<-2 && val>-15))
+{
+  
+if((val<-358 && val>-355) || (val<-2 && val>-5))
+x=1;
+else if((val<-355 && val>-351) || (val<-5 && val>-9))
+x=2;
+else if((val<-351 && val>-340) || (val<-9 && val>-15))
+x=3;
+
 return true;
+}
 else
+{
+x=0;
 return false;
+}
 }
 
 void Control::giroIzq(double deseado)
@@ -267,8 +279,8 @@ errorAntG=errorG;
 if(pwmGiroT>255)
   pwmGiroT=255;
 
-if(pwmGiroT<125)
-  pwmGiroT=125;
+if(pwmGiroT<130)
+  pwmGiroT=130;
 
     digitalWrite(motorIzqAde1, LOW);
     analogWrite(motorIzqAde2, pwmGiroT);
@@ -321,8 +333,8 @@ errorAntG=errorG;
 
   if(pwmGiroT>255)
   pwmGiroT=255;
-  if(pwmGiroT<125)
-  pwmGiroT=125;
+  if(pwmGiroT<130)
+  pwmGiroT=130;
 
     digitalWrite(motorIzqAde2, LOW);
     analogWrite(motorIzqAde1, pwmGiroT);
@@ -338,7 +350,7 @@ void Control::checa(double deseado)
 double angulo=getAnguloActual();
 unsigned long ahora=millis();
 unsigned long tiempoT=millis();
-int v=70;
+int v=90;
 b=2;
 
 if(desalineao(angulo,deseado)){
@@ -346,7 +358,7 @@ while(desalineao(angulo,deseado))
 {
 angulo=getAnguloActual();
 
-if(millis()>(ahora+800))
+if(millis()>(ahora+700))
 {
 v+=40;
 v=v>=255?255:v;
@@ -355,12 +367,11 @@ ahora=millis();
 
 dondeGirar1(deseado,v);
 
-if(millis()>(tiempoT+3000))
+if(millis()>(tiempoT+5000))
 return;
 
 }
 detenerse();
-//delay(100);
 }
 b=4;
 }
@@ -371,7 +382,7 @@ double a = getAnguloActual();
 double equis =0;
 if (d > a){
     equis = d - a;
-    if(equis<180){
+    if(equis<155){
 giroD(v);
 right=true;
 }
@@ -383,7 +394,7 @@ right=false;
 else{
     equis = a-d;
 
-    if (equis<180){
+    if (equis<155){
      giroI(v);
      right=false;
 }
@@ -421,19 +432,25 @@ void Control::giroI(int v)
     analogWrite(motorDerAtras2, v);
 
 }
-void Control::giro(double deseado, bool &bump)
+void Control::giro(double deseado)
 {
 double angulo=getAnguloActual();
 unsigned long nepe = millis();
-
+uint8_t t=0;
 while(desalineao(angulo,deseado))
 {
+
+if(bumper(t))
+{
+bumperControl=true;
+}
+
 angulo=getAnguloActual();
-if(millis()<(nepe+2900))
+if(millis()<(nepe+3500))
 dondeGirar(deseado);
-else if(millis()<(nepe+5000)){
+else if(millis()<(nepe+5500)){
 dondeGirar1(deseado,255);
-bump=true;
+bumperControl=true;
 }
 else
 {
@@ -449,7 +466,7 @@ else if(millis()<(jojo+5500))
 giroI(255);
 else{
 atrasPID(deseado);
-delay(200);
+delay(155);
 jojo=millis();
 }
 }
@@ -467,23 +484,16 @@ else if(millis()<(jojo+6000))
 giroD(255);
 else{
 atrasPID(deseado);
-delay(200);
+delay(155);
 jojo=millis();
 }
 }
 return;
 }
 }
-
-if(!bump)
-{
-if(bumper())
-bump=true;
 }
 }
 
-
-}
 void Control::dondeGirar(double d)
 {
 double a = getAnguloActual();
@@ -491,7 +501,7 @@ double equis =0;
 if (d > a){
     equis = d - a;
 
-    if(equis<180)
+    if(equis<155)
 giroDer(d);
     else
 giroIzq(d);
@@ -500,7 +510,7 @@ giroIzq(d);
 else{
     equis = a-d;
 
-    if (equis<180)
+    if (equis<155)
      giroIzq(d);
     else
      giroDer(d);
@@ -526,7 +536,7 @@ anguloA=getAnguloActual();
   if(CambioTiempo >= TiempoMuestreo)
   {
     //calculo error
-    if(deseado==0 && anguloA>=180)
+    if(deseado==0 && anguloA>=155)
     {
       error=360-anguloA;
     }
@@ -607,30 +617,42 @@ boost+=dif;
 }
 */
 
-if(dIzq<5){
-boost+=(30-dIzq*3);
+if(dIzq>=1 && dIzq<5){
+boost+=(46-dIzq*3);
 if(!bT)
 boostD=1;
 }
 else if(dIzq>10 && dIzq<17)
 {
-boost-=dIzq*3.7;
+boost-=dIzq*3.8;
 if(!bT)
+{
+  if(dIzq>15)
+boostD=3;
+else 
 boostD=2;
+
 }
-else if(dDer<5)
-{boost-=(30-dDer*3);
+}
+else if(dDer>=1 && dDer<5)
+{boost-=(46-dDer*3);
 if(!bT)
 boostD=1;
 }
 else if (dDer>10 && dDer<17)
 {
-boost+=dDer*3.7;
+boost+=dDer*3.8;
 if(!bT)
+{
+if(dDer>15)
+boostD=3;
+else 
 boostD=2;
 }
+}
 else
-{boost+=0;
+{
+boost+=0;
 boostD=0;
 }
     pwmIzquierda=base+boost-6;
@@ -679,7 +701,7 @@ anguloA=getAnguloActual();
   if(CambioTiempo >= TiempoMuestreo)
   {
     //calculo error
-    if(deseado==0 && anguloA>=180)
+    if(deseado==0 && anguloA>=155)
     {
       error=360-anguloA;
     }
@@ -750,14 +772,14 @@ analogWrite(motorDerAtras1, base+7);
 void Control::atrasSN()
 {
   girosX=0;
-  this -> setBase(210);
+  this -> setBase(155);
   this -> atrasPID(de);
   delay(600);
   this -> detenerse();
   delay(50);
   this -> actualizaSetPoint(de);
   delay(100);
-  this -> setBase(150);
+  this -> setBase(155);
   
   rightCount=0;
   
@@ -786,7 +808,6 @@ pinMode(pin4, INPUT);
 pinMode(pin5, INPUT);
 pinMode(pin6, INPUT);
 
-/*
 while(orientationStatus() != 3)
   {
     lcd.setCursor(6,0);
@@ -796,8 +817,8 @@ while(orientationStatus() != 3)
     lcd.print("SCal");
 
 
-  //delay(2700);
- */
+  delay(2700);
+  
 
   pinMode(motorIzqAde1, OUTPUT);
   pinMode(motorIzqAde2, OUTPUT);
@@ -829,9 +850,9 @@ while(orientationStatus() != 3)
 #endif
 
 #if defined HIGH_SPEED
-  sensor.setMeasurementTimingBudget(20000);
+  sensor.setMeasurementTimingBudget(15500);
 #elif defined HIGH_ACCURACY
-  sensor.setMeasurementTimingBudget(200000);
+  sensor.setMeasurementTimingBudget(155000);
 #endif
 
 }
@@ -848,16 +869,21 @@ void Control::tcaselect(int i)
 
 }
 
+void Control::actualizaSetPointY()
+{
+  double valu = y();
+  setPointY+=valu;
+}
 void Control::atras1()
 {
-  this -> setBase(210);
+  this -> setBase(180);
   this -> atras();
   delay(600);
   this -> detenerse();
   delay(50);
   this -> actualizaSetPoint(de);
   delay(100);
-  this -> setBase(150);
+  this -> setBase(155);
   
   rightCount=0;
   while(rightCount<tic/5)
@@ -868,17 +894,16 @@ void Control::atras1()
 
 void Control::choqueIzq(double d, int var)
 {
-bool be=false;
 double nuevoD;
 if(d==0)
 nuevoD=360-var;
 else
 nuevoD=d-var;
 
-giro(nuevoD,be);
+giro(nuevoD);
 atrasPID(nuevoD);
 delay(300);
-giro(d,be);
+giro(d);
 detenerse();
 //delay(100);
 
@@ -889,10 +914,10 @@ void Control::choqueDer(double d, int var)
 bool be=false;
 double nuevoD=d+var;
 
-giro(nuevoD,be);
+giro(nuevoD);
 atrasPID(nuevoD);
 delay(300);
-giro(d,be);
+giro(d);
 detenerse();
 //delay(100);
 
@@ -979,7 +1004,7 @@ bool Control::cuadroNegro()
 //Serial.println(b);
 //Serial.println(" ");
 
-if(r<1200 && g<1200 && b<1200)
+if(r<1100 && g<1100 && b<1100)
 return true;
 else
 return false;
@@ -1019,7 +1044,7 @@ void Control:: escribirNumLCD(int num)
 
 void Control:: escribirLetraLCD(char letra)
 {
-  lcd.clear();
+ // lcd.clear();
   lcd.print(letra);
 }
 
@@ -1041,6 +1066,7 @@ void Control::printLoc(int x, int y, int z)
   lcd.setCursor(13,0);
   lcd.print(z);
 
+delay(100);
 }
 
 void Control::checar()

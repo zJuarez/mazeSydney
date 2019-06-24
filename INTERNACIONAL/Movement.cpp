@@ -7,7 +7,7 @@ void Movement::moveOn()
 {
   bool perfect = true;
   
-  if(maze.sensors.getDistanceOf(maze.sensors.echo_E, 3) < 20)
+  if(maze.sensors.getDistanceOf(3) <= 20)
   {
     maze.robot.correction(maze.robot.getDirection());
     this -> conditionOne();
@@ -15,6 +15,7 @@ void Movement::moveOn()
   else
   {
     maze.moveForward(perfect);
+    delay(70);
     this -> isBlack();
   }
 }
@@ -45,12 +46,11 @@ void Movement::responseNoBlack()
     maze.sensors.motors.escribirLCD("TRANSFIRIENDO", "IZUIERDA");
   else
     maze.sensors.motors.escribirLCD("NADA", "NADA");
-
   delay(1500);*/
   //maze.sensors.motors.escribirLetraLCD(maze.robot.getDirection());
   ////delay(500);
   
-  maze.robot.changeSquare(&maze.robot.tile[maze.robot.x][maze.robot.y][maze.robot.z], maze.sensors.getDistanceOf(maze.sensors.echo_D, 2), maze.sensors.getDistanceOf(maze.sensors.echo_I, 1), maze.sensors.getDistanceOf(maze.sensors.echo_E, 3), maze.robot.getDirection());
+  maze.robot.changeSquare(&maze.robot.tile[maze.robot.x][maze.robot.y][maze.robot.z], maze.sensors.getDistanceOf(2), maze.sensors.getDistanceOf(1), maze.sensors.getDistanceOf(3), maze.robot.getDirection());
   
   //maze.sensors.motors.escribirNumLCD(maze.robot.x);
   //delay(500);
@@ -65,7 +65,7 @@ void Movement::responseNoBlack()
  //maze.sensors.motors.escribirNumLCD(maze.robot.z);
  //delay(500);
 
- //maze.sensors.motors.printLoc(maze.robot.x,maze.robot.y,maze.robot.z);
+ // maze.sensors.motors.printLoc(maze.robot.x,maze.robot.y,maze.robot.z);
  //delay(500);
  
   maze.robot.changeStatus(&maze.robot.tile[maze.robot.x][maze.robot.y][maze.robot.z], maze.robot.getDirection());
@@ -225,8 +225,8 @@ void Movement::conditionFour()
       }
     }
 
-    if(maze.robot.x==maze.robot.startX && maze.robot.y==maze.robot.startY  && maze.robot.z==maze.robot.startZ)
-    delay(30000);
+    //if(maze.robot.x==maze.robot.startX && maze.robot.y==maze.robot.startY  && maze.robot.z==maze.robot.startZ)
+    //delay(30000);
     
   }
 
@@ -263,3 +263,4 @@ void Movement::conditionFour()
         } break;
     }
 }
+

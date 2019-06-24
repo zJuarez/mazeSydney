@@ -21,7 +21,7 @@ class Movement
     void conditionThree();
     void conditionFour();
 
-    byte xA, yA, zA;
+    byte xA, yA, zA, xF, yF;
     bool endOfRound = false;
 
    private:
@@ -31,3 +31,4 @@ class Movement
 };
 
 #endif 
+

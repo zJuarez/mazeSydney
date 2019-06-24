@@ -171,3 +171,4 @@ void Bit::setInf2(char info)
 {
   inf2 = info;
 }
+

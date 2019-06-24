@@ -26,7 +26,6 @@ class Control {
   
       Control();
       Adafruit_BNO055 bno;
-   
       void avanzar(double,double,double,int&);
       void tcaselect(int);
       void adelante(int,int);
@@ -35,7 +34,7 @@ class Control {
       void giroIzq(double);  
       void dondeGirar(double);
       void dondeGirar1(double,int);
-      void giro(double,bool&);
+      void giro(double);
       void checa(double);
       void giroD(int);
       void giroI(int);
@@ -45,7 +44,7 @@ class Control {
       void atrasSN();
       int rampa(double);
       double y();
-      bool bumper();
+      bool bumper(uint8_t&);
       void atrasPID(double);
       void setBase(double);
       void detenerse();  //chido
@@ -68,6 +67,7 @@ class Control {
       void escribirNumLCD(int);
       void escribirLetraLCD(char);
       void checar();
+      void actualizaSetPointY();
   
       const int motorIzqAde1  = 9;  
       const int motorIzqAde2  = 8;  
@@ -78,7 +78,7 @@ class Control {
       const int motorDerAtras1  = 7;
       const int motorDerAtras2  = 6;
       void printLoc(int,int,int);
-
+      
       int pin1 = 23; //derecha enmedio
       int pin2 = 25; //derecha esquina
       int pin3 = 27; //izquierda enmedio
@@ -101,3 +101,4 @@ class Control {
 
 
 #endif
+

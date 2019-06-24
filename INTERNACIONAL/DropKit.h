@@ -21,9 +21,10 @@ class DropKit
     
    private:
    
-    const uint8_t dispenserMotor1  = 13;
-    const uint8_t dispenserMotor2  = 12;
+    const uint8_t dispenserMotor1  = 12;
+    const uint8_t dispenserMotor2  = 13;
     unsigned long startTime;
 };
 
 #endif
+

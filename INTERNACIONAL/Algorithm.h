@@ -4,8 +4,11 @@
 #include <Arduino.h>
 #include <StackArray.h>
 #include <QueueArray.h>
+#include <SoftwareSerial.h>
 #include "Priotities.h"
 #include "SenseMap.h"
+
+
 
 class Algorithm
 {
@@ -14,6 +17,9 @@ class Algorithm
     Algorithm();
     Priotities robot{7, 7, 0, 'N'};
     SenseMap sensors;
+
+    char camaraChar = '0';
+
 
     struct costs{
       byte a, b, node;
@@ -26,11 +32,14 @@ class Algorithm
     void clear(byte ox, byte oy);
     void startBfs();
     void findWay();
+    bool visualVictim();
+    bool heatVictim();
     void rightTurn();
     void leftTurn();
     void moveForward(bool& perfect);
     byte objX, objY;
-
+    void setup();
+    
   private:
 
     int m4p[15][15];
@@ -40,6 +49,8 @@ class Algorithm
     byte BFSx, BFSy, contador, menor;
     int value;
     int reverseRightCount = 0;
+    char inByte = '0';
 };
 
 #endif
+

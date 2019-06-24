@@ -18,7 +18,7 @@ class Priotities
     bool correctMovementRight(char dir);
     bool correctMovementLeft(char dir);
     bool correctMovementFront(char dir);
-    void changeSquare(Bit *actualSquare, float rightDistance, float leftDistance, float frontDistance, char dir);
+    void changeSquare(Bit *actualSquare, int rightDistance, int leftDistance, int frontDistance, char dir);
     void changeStatus(Bit *actualSquare, char dir);
     void changeCoordinates(char dir);
     void correction(char dir);
@@ -40,14 +40,14 @@ class Priotities
     uint16_t startY;
     uint16_t startZ;
 
-    uint16_t fFxs[50];
-    uint16_t fFys[50];
-    uint16_t sFxs[50];
-    uint16_t sFys[50];
-    uint16_t tFxs[50];
-    uint16_t tFys[50];
-    uint16_t fhFxs[50];
-    uint16_t fhFys[50];
+    uint16_t fFxs[100];
+    uint16_t fFys[100];
+    uint16_t sFxs[100];
+    uint16_t sFys[100];
+    uint16_t tFxs[100];
+    uint16_t tFys[100];
+    uint16_t fhFxs[100];
+    uint16_t fhFys[100];
 
   private:
   
@@ -56,3 +56,4 @@ class Priotities
 };
 
 #endif
+

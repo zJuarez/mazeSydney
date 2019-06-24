@@ -1,5 +1,20 @@
-#include <Arduino.h>
+ #include <Arduino.h>
 #include "SenseMap.h"
+
+#define  trig_E  28
+#define  echo_E  29
+#define  trig_A  35
+#define  echo_A  34
+#define  trig_D  30
+#define  echo_D  31
+#define  trig_I  32
+#define  echo_I  33
+#define MAX_DISTANCE 220
+
+NewPing soundE(trig_E, echo_E, MAX_DISTANCE); 
+NewPing soundA(trig_A, echo_A, MAX_DISTANCE); 
+NewPing soundD(trig_D, echo_D, MAX_DISTANCE); 
+NewPing soundI(trig_I, echo_I, MAX_DISTANCE);  
 
 SenseMap::SenseMap(){}
 
@@ -14,28 +29,25 @@ void SenseMap::setup()
   pinMode(echo_A, INPUT);
   pinMode(trig_I, OUTPUT);
   pinMode(echo_I, INPUT);
+  pinMode(37, OUTPUT);
+  pinMode(38, OUTPUT);
+  pinMode(39, OUTPUT);
   firstTemperature=(temperatureCelcius(mlxRight)+temperatureCelcius(mlxLeft))/2;
 }
 
-void SenseMap::beginTrig(const byte trig)
-{
-  digitalWrite(trig, HIGH);
-  digitalWrite(trig, LOW);
-}
-
-float SenseMap::getDistanceOf(const byte echo, uint8_t num)
-{
+int SenseMap::getDistanceOf(uint8_t num)
+{  
   if(num == 1)
-    beginTrig(trig_I);
+    uS = soundI.ping_median();
   else if(num == 2)
-    beginTrig(trig_D);
+    uS = soundD.ping_median();
   else if(num == 3)
-    beginTrig(trig_E);
+    uS = soundE.ping_median();
   else if(num == 4)
-    beginTrig(trig_A);
+    uS = soundA.ping_median();
   
-  Time = pulseIn(echo, HIGH);
-  distance = Time * 0.000001 * sound / 2.0;
+  distance = uS / US_ROUNDTRIP_CM;
+  
   return distance;
 }
 
@@ -68,40 +80,40 @@ float SenseMap::temperatureCelcius(int mlx)
 
 void SenseMap::checkDistances()
 {
-  if(this -> getDistanceOf(echo_E, 3) >= 8 && this -> getDistanceOf(echo_E, 3) <= 13)
+  if(this -> getDistanceOf(3) >= 7.3 && this -> getDistanceOf(3) <= 13)
   {  
     motors.setBase(115);
     unsigned long tempoo = millis();
     
-    while(this -> getDistanceOf(echo_E, 3) > 8)
+    while(this -> getDistanceOf(3) >= 7.3)
     {
       motors.avanzar(motors.de,30,30,motors.bD);
       
-      if(millis()>(tempoo+1000))
+      if(millis()>(tempoo+300))
         break;
     }
     
   motors.detenerse();
-  motors.setBase(150);
+  motors.setBase(155);
   }
-  else if(this -> getDistanceOf(echo_E, 3) < 5 && this -> getDistanceOf(echo_E, 3) != 0)
+  else if(this -> getDistanceOf(3) < 5 && this -> getDistanceOf(3) != 0)
   {
     unsigned long ter = millis();
-    motors.setBase(95);
+    motors.setBase(100);
     
-    while(this -> getDistanceOf(echo_E, 3) < 4)
+    while(this -> getDistanceOf(3) <= 4)
     {
       motors.atrasPID(motors.de);
       if(millis()>(ter+300))
-        break;
+      break;
     }
     motors.detenerse();
-    motors.setBase(150);
+    motors.setBase(155);
   }
   
-  float disss = this -> getDistanceOf(echo_E, 3);
+  float disss = this -> getDistanceOf(3);
   
-  if(disss >= 27 && disss <= 45) //36
+  if(disss >= 27 && disss <= 43) //36
   {
     motors.setBase(110);
     unsigned long terr = millis();
@@ -110,7 +122,7 @@ void SenseMap::checkDistances()
     {}
     else if(disss > 38)
     {
-      while(this -> getDistanceOf(echo_E, 3) > 36)
+      while(this -> getDistanceOf(3) > 38)
       {
         motors.avanzar(motors.de,30,30,motors.bD);
         if(millis() > (terr + 300))
@@ -121,7 +133,7 @@ void SenseMap::checkDistances()
     }
     else if(disss < 31)
     {
-      while(this -> getDistanceOf(echo_E, 3) < 31)
+      while(this -> getDistanceOf(3) < 31)
        {
           motors.atrasPID(motors.de);
           if(millis() > (terr+200))
@@ -131,6 +143,92 @@ void SenseMap::checkDistances()
      motors.detenerse();
     }
     
-     motors.setBase(150);
+     motors.setBase(155);
   }
 }
+
+void SenseMap::acomodo(double dEI,double dAI)
+{
+
+
+  if(abs(dEI-dAI)<20)
+  dAI=300;
+  
+  char pos = dEI<dAI?'E':'A';
+  double m = dEI<=dAI?dEI:dAI;
+  
+  if(m>80)
+  return;
+  
+unsigned long nlp = millis();
+
+int k = teMamaste(m,pos);
+  
+    if(k!=0){
+    motors.setBase(100);
+    while(k!=0)
+    {
+      k=teMamaste(m,pos);
+      
+      if(k==1)
+      motors.avanzar(motors.de,30,30,motors.bD);
+      else if(k==2)
+      {
+   motors.setBase(155);
+   motors.detenerse();
+   return;
+      }
+
+      if(millis()>(nlp+650))
+      {
+   motors.setBase(155);
+   motors.detenerse();
+   return;
+      }
+    }
+    
+   motors.setBase(155);
+   motors.detenerse();
+   }
+}
+int SenseMap::teMamaste(double disI, char pos)
+{
+  double dActual;
+  if(pos=='E')
+  {
+    dActual=this -> getDistanceOf(3);
+    
+    if(dActual<(disI-33))
+    return 1;
+    else if(dActual>(disI-27))
+    return 2;
+    else
+    return 0;
+  }
+  else if (pos == 'A')
+  {
+    dActual=this -> getDistanceOf(4);
+
+    
+    if(dActual<(disI+27))
+    return 1;
+    else if(dActual>(disI+33))
+    return 2;
+    else 
+    return 0;
+  }
+}
+
+void SenseMap::blinkLeds()
+{
+  for(int i = 0; i < 5; i++)
+  {
+    digitalWrite(37, HIGH);
+    delay(500);
+    digitalWrite(37, LOW);
+    digitalWrite(39, HIGH);
+    delay(500);
+    digitalWrite(39, LOW);
+  }
+}
+

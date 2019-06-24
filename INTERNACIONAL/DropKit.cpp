@@ -19,7 +19,7 @@ void DropKit::dropOneKitLeft()
   while(rightCount < 1500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
 
       if(millis() - startTime == 1000)
         rightCount = 1501;
@@ -30,7 +30,7 @@ void DropKit::dropOneKitLeft()
 
   while(rightCount < 300)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
     }
 
@@ -41,7 +41,7 @@ void DropKit::dropOneKitLeft()
   while(rightCount < 500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
 
       if(millis() - startTime == 1000)
         rightCount = 1501;
@@ -52,7 +52,7 @@ void DropKit::dropOneKitLeft()
 
   while(rightCount < 1500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
     }
 
@@ -67,7 +67,7 @@ void DropKit::dropOneKitRight()
   while(rightCount < 500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
     }
 
   stopDispenser();
@@ -76,7 +76,7 @@ void DropKit::dropOneKitRight()
 
   while(rightCount < 1500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
 
       if(millis() - startTime == 1000)
@@ -89,7 +89,7 @@ void DropKit::dropOneKitRight()
   while(rightCount < 300)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
     }
 
   this -> stopDispenser();
@@ -98,7 +98,7 @@ void DropKit::dropOneKitRight()
 
   while(rightCount < 500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
 
       if(millis() - startTime == 1000)
@@ -111,7 +111,7 @@ void DropKit::dropOneKitRight()
   while(rightCount < 1500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
     }
 
   this -> stopDispenser();
@@ -119,7 +119,7 @@ void DropKit::dropOneKitRight()
 
   while(rightCount < 500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
     }
 
@@ -135,7 +135,7 @@ void DropKit::dropTwoKitsLeft()
   while(rightCount < 1500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
 
       if(millis() - startTime == 1000)
         rightCount = 1501;
@@ -146,7 +146,7 @@ void DropKit::dropTwoKitsLeft()
 
   while(rightCount < 300)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
     }
 
@@ -157,7 +157,7 @@ void DropKit::dropTwoKitsLeft()
   while(rightCount < 500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
 
       if(millis() - startTime == 1000)
         rightCount = 1501;
@@ -168,7 +168,7 @@ void DropKit::dropTwoKitsLeft()
 
   while(rightCount < 1500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
     }
 
@@ -179,7 +179,7 @@ void DropKit::dropTwoKitsLeft()
   while(rightCount < 3000)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
 
       if(millis() - startTime == 1000)
         rightCount = 3001;
@@ -190,7 +190,7 @@ void DropKit::dropTwoKitsLeft()
 
   while(rightCount < 300)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
     }
 
@@ -201,7 +201,7 @@ void DropKit::dropTwoKitsLeft()
   while(rightCount < 500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
 
       if(millis() - startTime == 1000)
         rightCount = 1501;
@@ -212,7 +212,7 @@ void DropKit::dropTwoKitsLeft()
 
   while(rightCount < 1500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
     }
 
@@ -222,7 +222,7 @@ void DropKit::dropTwoKitsLeft()
   while(rightCount < 500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
     }
 
   stopDispenser();
@@ -236,7 +236,7 @@ void DropKit::dropTwoKitsRight()
 
   while(rightCount < 1500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
 
       if(millis() - startTime == 1000)
@@ -249,7 +249,7 @@ void DropKit::dropTwoKitsRight()
   while(rightCount < 300)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
     }
 
   this -> stopDispenser();
@@ -258,7 +258,7 @@ void DropKit::dropTwoKitsRight()
 
   while(rightCount < 500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
 
       if(millis() - startTime == 1000)
@@ -271,7 +271,7 @@ void DropKit::dropTwoKitsRight()
   while(rightCount < 1500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
     }
 
   this -> stopDispenser();
@@ -280,7 +280,7 @@ void DropKit::dropTwoKitsRight()
 
   while(rightCount < 3000)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
 
       if(millis() - startTime == 1000)
@@ -293,7 +293,7 @@ void DropKit::dropTwoKitsRight()
   while(rightCount < 300)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
     }
 
   this -> stopDispenser();
@@ -302,7 +302,7 @@ void DropKit::dropTwoKitsRight()
 
   while(rightCount < 500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
 
       if(millis() - startTime == 1000)
@@ -315,7 +315,7 @@ void DropKit::dropTwoKitsRight()
   while(rightCount < 1500)
     {
       digitalWrite(dispenserMotor1, LOW);
-      analogWrite(dispenserMotor2, 255);
+      analogWrite(dispenserMotor2, 200);
     }
 
   this -> stopDispenser();
@@ -323,7 +323,7 @@ void DropKit::dropTwoKitsRight()
 
   while(rightCount < 500)
     {
-      analogWrite(dispenserMotor1, 255);
+      analogWrite(dispenserMotor1, 200);
       digitalWrite(dispenserMotor2, LOW);
     }
 
@@ -338,3 +338,4 @@ void DropKit::stopDispenser()
   digitalWrite(dispenserMotor1, LOW);
   digitalWrite(dispenserMotor2, LOW);
 }
+
