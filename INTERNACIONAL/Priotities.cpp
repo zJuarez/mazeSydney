@@ -666,15 +666,35 @@ void Priotities::correction(char dir)
 
 void Priotities::dataTransferUp()
 {
-   for(int i = -1; i < 15; i++)
+   for(int i = 14; i >= 0; i--)
    {
-     for(int j = 0; j < 15; j++)
+     for(int j = 14; j >= 0; j--)
      {
-       tile[i+1][j][z].setInf1(tile[i][j][z].getInf1());
-       tile[i+1][j][z].setInf2(tile[i][j][z].getInf2());
+      if(i+1 != 15)
+      {
+        tile[i+1][j][z].setInf1(tile[x][y][z].getInf1());
+        tile[i+1][j][z].setInf2(tile[x][y][z].getInf2());
+      }
+      if(i == 0)
+      {
+        tile[i][j][z].exist(NULL);
+        tile[i][j][z].pending(NULL);
+        tile[i][j][z].down(NULL, NULL);
+        tile[i][j][z].up(NULL, NULL);
+        tile[i][j][z].left(NULL, NULL);
+        tile[i][j][z].right(NULL, NULL);
+        tile[i][j][z].blackTile(NULL);
+        tile[i][j][z].checkpoint(NULL);
+        tile[i][j][z].victim(NULL);
+        tile[i][j][z].visited(NULL);
+        tile[i][j][z].flo0r(NULL);
+        tile[i][j][z].ramp(NULL);
+        tile[i][j][z].start(NULL);
+        tile[i][j][z].bumper(NULL);      
+      }
      }
    }
-
+   
    x = 0;
    startX++;
 
@@ -702,17 +722,37 @@ void Priotities::dataTransferUp()
 
 void Priotities::dataTransferDown()
 {
-  for(int i = 0; i < 16; i++)
+  for(int i = 0; i < 15; i++)
    {
      for(int j = 0; j < 15; j++)
      {
+      if(i-1 != -1)
+      {
        tile[i-1][j][z].setInf1(tile[i][j][z].getInf1());
        tile[i-1][j][z].setInf2(tile[i][j][z].getInf2());
+      }
+      if(i == 14)
+      {
+        tile[i][j][z].exist(NULL);
+        tile[i][j][z].pending(NULL);
+        tile[i][j][z].down(NULL, NULL);
+        tile[i][j][z].up(NULL, NULL);
+        tile[i][j][z].left(NULL, NULL);
+        tile[i][j][z].right(NULL, NULL);
+        tile[i][j][z].blackTile(NULL);
+        tile[i][j][z].checkpoint(NULL);
+        tile[i][j][z].victim(NULL);
+        tile[i][j][z].visited(NULL);
+        tile[i][j][z].flo0r(NULL);
+        tile[i][j][z].ramp(NULL);
+        tile[i][j][z].start(NULL);
+        tile[i][j][z].bumper(NULL);    
+      }
      }
    }
 
    x = 14;
-   startX --;
+   startX--;
 
    if(z == 0)
    {
@@ -740,10 +780,30 @@ void Priotities::dataTransferRight()
 {
   for(int i = 0; i < 15; i++)
    {
-     for(int j = 0; j < 16; j++)
+     for(int j = 0; j < 15; j++)
      {
-       tile[i][j-1][z].setInf1(tile[i][j][z].getInf1());
-       tile[i][j-1][z].setInf2(tile[i][j][z].getInf2());
+      if(j-1 != -1)
+      {
+        tile[i][j-1][z].setInf1(tile[i][j][z].getInf1());
+        tile[i][j-1][z].setInf2(tile[i][j][z].getInf2());
+      }
+      if(j == 14)
+      {
+        tile[i][j][z].exist(NULL);
+        tile[i][j][z].pending(NULL);
+        tile[i][j][z].down(NULL, NULL);
+        tile[i][j][z].up(NULL, NULL);
+        tile[i][j][z].left(NULL, NULL);
+        tile[i][j][z].right(NULL, NULL);
+        tile[i][j][z].blackTile(NULL);
+        tile[i][j][z].checkpoint(NULL);
+        tile[i][j][z].victim(NULL);
+        tile[i][j][z].visited(NULL);
+        tile[i][j][z].flo0r(NULL);
+        tile[i][j][z].ramp(NULL);
+        tile[i][j][z].start(NULL);
+        tile[i][j][z].bumper(NULL);
+      }
      }
    }
 
@@ -774,12 +834,32 @@ void Priotities::dataTransferRight()
 
 void Priotities::dataTransferLeft()
 {
-  for(int i = 0; i < 15; i++)
+  for(int i = 14; i >= 0; i--)
    {
-     for(int j = -1; j < 15; j++)
+     for(int j = 14; j >= 0; j--)
      {
-       tile[i][j+1][z].setInf1(tile[i][j][z].getInf1());
-       tile[i][j+1][z].setInf2(tile[i][j][z].getInf2());
+      if(j+1 != 15)
+      {
+        tile[i][j+1][z].setInf1(tile[x][y][z].getInf1());
+        tile[i][j+1][z].setInf2(tile[x][y][z].getInf2());
+      }
+      if(j == 0)
+      {
+        tile[i][j][z].exist(NULL);
+        tile[i][j][z].pending(NULL);
+        tile[i][j][z].down(NULL, NULL);
+        tile[i][j][z].up(NULL, NULL);
+        tile[i][j][z].left(NULL, NULL);
+        tile[i][j][z].right(NULL, NULL);
+        tile[i][j][z].blackTile(NULL);
+        tile[i][j][z].checkpoint(NULL);
+        tile[i][j][z].victim(NULL);
+        tile[i][j][z].visited(NULL);
+        tile[i][j][z].flo0r(NULL);
+        tile[i][j][z].ramp(NULL);
+        tile[i][j][z].start(NULL);
+        tile[i][j][z].bumper(NULL);      
+      }
      }
    }
 
