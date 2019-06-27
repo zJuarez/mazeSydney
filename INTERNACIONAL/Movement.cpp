@@ -7,25 +7,20 @@ void Movement::moveOn()
 {
   bool perfect = true;
   
-  if(maze.sensors.getDistanceOf(3) <= 20)
-  {
-    maze.robot.correction(maze.robot.getDirection());
-    this -> conditionOne();
-  }
-  else
-  {
-    maze.moveForward(perfect);
-    delay(70);
+
+   maze.moveForward(perfect);
+/*   
+    */
     this -> isBlack();
-  }
+  //}
 }
 
 void Movement::isBlack()
 {
   //maze.sensors.motors.escribirLCD("Revisando Color", "de cuadro");
   ////delay(500);
-  black = maze.sensors.motors.cuadroNegro();
-  (black == true) ? this -> responseBlack() : this -> responseNoBlack();
+  
+  (maze.sensors.motors.cuadroNegro()) ? this -> responseBlack() : this -> responseNoBlack();  
 }
 
 void Movement::responseNoBlack()
@@ -78,6 +73,8 @@ void Movement::responseBlack()
   //maze.sensors.motors.escribirLCD("Caudro negro", "detectado");
 
   maze.sensors.motors.rightCount = 0;
+  maze.sensors.motors.girosX=3;
+  
 
   while(maze.sensors.motors.rightCount < maze.sensors.motors.tic1)
     maze.sensors.motors.atrasPID(maze.sensors.motors.de);
@@ -263,4 +260,3 @@ void Movement::conditionFour()
         } break;
     }
 }
-

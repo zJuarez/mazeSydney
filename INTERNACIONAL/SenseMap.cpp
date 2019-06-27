@@ -1,52 +1,42 @@
  #include <Arduino.h>
 #include "SenseMap.h"
 
-#define  trig_E  28
-#define  echo_E  29
-#define  trig_A  35
-#define  echo_A  34
-#define  trig_D  30
-#define  echo_D  31
-#define  trig_I  32
-#define  echo_I  33
-#define MAX_DISTANCE 220
-
-NewPing soundE(trig_E, echo_E, MAX_DISTANCE); 
-NewPing soundA(trig_A, echo_A, MAX_DISTANCE); 
-NewPing soundD(trig_D, echo_D, MAX_DISTANCE); 
-NewPing soundI(trig_I, echo_I, MAX_DISTANCE);  
+Ultrasonic front(28, 29);
+Ultrasonic raight(30, 31);
+Ultrasonic left(32, 33);
+Ultrasonic back(35, 34);
 
 SenseMap::SenseMap(){}
 
 void SenseMap::setup()
 {
   i2c_init(); 
-  pinMode(trig_E, OUTPUT);
-  pinMode(echo_E, INPUT);
-  pinMode(trig_D, OUTPUT);
-  pinMode(echo_D, INPUT);
-  pinMode(trig_A, OUTPUT);
-  pinMode(echo_A, INPUT);
-  pinMode(trig_I, OUTPUT);
-  pinMode(echo_I, INPUT);
   pinMode(37, OUTPUT);
   pinMode(38, OUTPUT);
   pinMode(39, OUTPUT);
+
+    motors.escribirNumLCD(getDistanceOf(3));
+    delay(300);
+    motors.escribirNumLCD(getDistanceOf(2));
+    delay(300);
+    motors.escribirNumLCD(getDistanceOf(1));
+    delay(300);
+    motors.escribirNumLCD(getDistanceOf(4));
+    delay(300);
+    
   firstTemperature=(temperatureCelcius(mlxRight)+temperatureCelcius(mlxLeft))/2;
 }
 
 int SenseMap::getDistanceOf(uint8_t num)
 {  
   if(num == 1)
-    uS = soundI.ping_median();
+    distance = left.read();
   else if(num == 2)
-    uS = soundD.ping_median();
+    distance = raight.read();
   else if(num == 3)
-    uS = soundE.ping_median();
+    distance = front.read();
   else if(num == 4)
-    uS = soundA.ping_median();
-  
-  distance = uS / US_ROUNDTRIP_CM;
+    distance = back.read();
   
   return distance;
 }
@@ -80,9 +70,17 @@ float SenseMap::temperatureCelcius(int mlx)
 
 void SenseMap::checkDistances()
 {
-  if(this -> getDistanceOf(3) >= 7.3 && this -> getDistanceOf(3) <= 13)
+motors.setBase(motors.velInicial);
+
+int d1 = this -> getDistanceOf(3);
+int pp;
+if (motors.bumperControl)
+pp=18;
+else
+pp=14;
+
+  if(d1 >= 7 && d1 <= pp)
   {  
-    motors.setBase(115);
     unsigned long tempoo = millis();
     
     while(this -> getDistanceOf(3) >= 7.3)
@@ -94,28 +92,24 @@ void SenseMap::checkDistances()
     }
     
   motors.detenerse();
-  motors.setBase(155);
   }
-  else if(this -> getDistanceOf(3) < 5 && this -> getDistanceOf(3) != 0)
+  else if(d1 <= 5 || d1>350)
   {
     unsigned long ter = millis();
-    motors.setBase(100);
     
-    while(this -> getDistanceOf(3) <= 4)
+    while(this -> getDistanceOf(3) <= 5 || getDistanceOf(3)>350)
     {
       motors.atrasPID(motors.de);
-      if(millis()>(ter+300))
+      if(millis()>(ter+200))
       break;
     }
     motors.detenerse();
-    motors.setBase(155);
   }
   
-  float disss = this -> getDistanceOf(3);
+  int disss = this -> getDistanceOf(3);
   
-  if(disss >= 27 && disss <= 43) //36
+  if(disss >= 27 && disss <= 42) //36
   {
-    motors.setBase(110);
     unsigned long terr = millis();
     
     if(disss >= 31 && disss <= 38)
@@ -125,7 +119,7 @@ void SenseMap::checkDistances()
       while(this -> getDistanceOf(3) > 38)
       {
         motors.avanzar(motors.de,30,30,motors.bD);
-        if(millis() > (terr + 300))
+        if(millis() > (terr + 200))
           break;
       }
       
@@ -143,7 +137,6 @@ void SenseMap::checkDistances()
      motors.detenerse();
     }
     
-     motors.setBase(155);
   }
 }
 
@@ -165,7 +158,8 @@ unsigned long nlp = millis();
 int k = teMamaste(m,pos);
   
     if(k!=0){
-    motors.setBase(100);
+    motors.setBase(motors.velInicial);
+
     while(k!=0)
     {
       k=teMamaste(m,pos);
@@ -174,21 +168,17 @@ int k = teMamaste(m,pos);
       motors.avanzar(motors.de,30,30,motors.bD);
       else if(k==2)
       {
-   motors.setBase(155);
    motors.detenerse();
    return;
       }
 
       if(millis()>(nlp+650))
       {
-   motors.setBase(155);
    motors.detenerse();
    return;
       }
     }
-    
-   motors.setBase(155);
-   motors.detenerse();
+ motors.detenerse();
    }
 }
 int SenseMap::teMamaste(double disI, char pos)
@@ -231,4 +221,3 @@ void SenseMap::blinkLeds()
     digitalWrite(39, LOW);
   }
 }
-

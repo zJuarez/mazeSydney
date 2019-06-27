@@ -2,7 +2,6 @@
 #define Control_h
 
 #include "arduino.h"
-#include <PID_v1.h>
 #include <Wire.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
@@ -78,6 +77,7 @@ class Control {
       const int motorDerAtras1  = 7;
       const int motorDerAtras2  = 6;
       void printLoc(int,int,int);
+      bool condRampa(bool);
       
       int pin1 = 23; //derecha enmedio
       int pin2 = 25; //derecha esquina
@@ -89,7 +89,7 @@ class Control {
       double getSetpoint(double);
       double getAnguloActual();
 
-      int tic1=1220;//660
+      int tic1=1266;//660
       int tic=tic1;
       int bD=0;
       double de = 0;
@@ -97,8 +97,8 @@ class Control {
       int girosX = 0;
       bool bumperControl = false;
       bool bT = false;
+      double velInicial=152;
 };
 
 
 #endif
-

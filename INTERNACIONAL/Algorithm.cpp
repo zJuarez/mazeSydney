@@ -19,12 +19,14 @@ bool Algorithm::heatVictim()
     if(sensors.temperatureCelcius(sensors.mlxLeft) > (sensors.firstTemperature + 10))
       {
         sensors.motors.detenerse();
+        sensors.blinkLeds();
         robot.dispenser.dropOneKitLeft();
         return true;
       }
       if(sensors.temperatureCelcius(sensors.mlxRight) > (sensors.firstTemperature + 10))
       {
         sensors.motors.detenerse();
+        sensors.blinkLeds();
         robot.dispenser.dropOneKitRight();
         return true;
       }
@@ -40,22 +42,34 @@ bool Algorithm::visualVictim()
   bool done = false;
 
     cam.listen();
+    
     while (cam.available() > 0) {
+    int dI = sensors.getDistanceOf(1);
+    int dD = sensors.getDistanceOf(2);
     inByte = cam.read();
-    if(inByte == '7' && sensors.getDistanceOf(1) < 21){
+
+    while(inByte == '1' || inByte == 'A')
+    {
+     inByte= cam.read();
+     sensors.motors.detenerse();
+     sensors.motors.escribirLCD("BULTO", "BULTO");
+     done=true;
+    }
+    
+    if(inByte == '7' && dI < 21&& dI!=0 && done){
     sensors.motors.detenerse();
     sensors.motors.escribirLCD("LETRA S", "IZQUIERDA");
     sensors.blinkLeds();;
     return true;}
-    else if(inByte == '8' && sensors.getDistanceOf(1) < 21){
+    else if(inByte == '8' && dI < 21 && dI!=0 && done){
     sensors.motors.detenerse();
     sensors.motors.escribirLCD("LETRA U", "IZQUIERDA");
-    sensors.blinkLeds();;
+    sensors.blinkLeds();
     return true;}
-    else if(inByte == '6' && sensors.getDistanceOf(1) < 21){
+    else if(inByte == '6' && dI< 21 && dI!=0 && done){
     sensors.motors.detenerse();
     sensors.motors.escribirLCD("LETRA H", "IZQUIERDA");
-    sensors.blinkLeds();;
+    sensors.blinkLeds();
     return true;}
     /*else if(inByte == '5' && sensors.getDistanceOf(2) < 21){
     sensors.motors.detenerse();
@@ -67,26 +81,81 @@ bool Algorithm::visualVictim()
     sensors.motors.escribirLCD("KIT", "IZQUIERDA");
     sensors.blinkLeds();;
     return true;}*/
-    else if(inByte == '4' && sensors.getDistanceOf(2) < 21){
+    else if(inByte == '4' && dD < 21 && dD!=0 && done){
     sensors.motors.detenerse();
     sensors.motors.escribirLCD("LETRA U", "DERECHA");
-    sensors.blinkLeds();;
+    sensors.blinkLeds();
     return true;}
-    else if(inByte == '3' && sensors.getDistanceOf(2) < 21){
+    else if(inByte == '3' && dD < 21 && dD!=0 && done){
     sensors.motors.detenerse();
     sensors.motors.escribirLCD("LETRA S", "DERECHA");
-    sensors.blinkLeds();;
+    sensors.blinkLeds();
     return true;}
-    else if(inByte == '2' && sensors.getDistanceOf(2) < 21){
+    else if(inByte == '2' && dD < 21 && dD!=0 && done){
     sensors.motors.detenerse();
     sensors.motors.escribirLCD("LETRA H", "DERECHA");
     sensors.blinkLeds();;
     return true;}
-    else if(inByte == '1' && sensors.getDistanceOf(2) < 21 && !done){
+    }
+
+    return false;
+}
+bool Algorithm::visualVictim1()
+{
+
+  inByte =  '0';
+  bool done = false;
+
+    cam.listen();
+    while (cam.available() > 0) {
+    int dI = sensors.getDistanceOf(1);
+    int dD = sensors.getDistanceOf(2);
+    inByte = cam.read();
+    if(inByte == '7' && dI < 21&& dI!=0 && done){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA S", "IZQUIERDA");
+    sensors.blinkLeds();;
+    return true;}
+    else if(inByte == '8' && dI < 21 && dI!=0 && done){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA U", "IZQUIERDA");
+    sensors.blinkLeds();
+    return true;}
+    else if(inByte == '6' && dI< 21 && dI!=0 && done){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA H", "IZQUIERDA");
+    sensors.blinkLeds();
+    return true;}
+    /*else if(inByte == '5' && sensors.getDistanceOf(2) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("KIT", "DERECHA");
+    sensors.blinkLeds();;
+    return true;}
+    else if(inByte == '9' && sensors.getDistanceOf(1) < 21){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("KIT", "IZQUIERDA");
+    sensors.blinkLeds();;
+    return true;}*/
+    else if(inByte == '4' && dD < 21 && dD!=0 && done){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA U", "DERECHA");
+    sensors.blinkLeds();
+    return true;}
+    else if(inByte == '3' && dD < 21 && dD!=0 && done){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA S", "DERECHA");
+    sensors.blinkLeds();
+    return true;}
+    else if(inByte == '2' && dD < 21 && dD!=0 && done){
+    sensors.motors.detenerse();
+    sensors.motors.escribirLCD("LETRA H", "DERECHA");
+    sensors.blinkLeds();;
+    return true;}
+    else if(inByte == '1' && dD < 21 && dD!=0 && !done){
     sensors.motors.detenerse();
     sensors.motors.escribirLCD("BULTO", "BULTO");
     done = true;}
-    else if(inByte == 'A' && sensors.getDistanceOf(1) < 21 && !done){
+    else if(inByte == 'A' && dI < 21 && dI!=0 && !done){
     sensors.motors.detenerse();
     sensors.motors.escribirLCD("BULTO", "BULTO");
     done = true;
@@ -118,9 +187,15 @@ void Algorithm::clear(byte ox, byte oy)
     }
 
   for(byte i = 0; i <15; i++)
+  {
     for(byte j = 0; j < 15; j++)
+    {
         if(robot.tile[i][j][robot.z].visited() && !robot.tile[i][j][robot.z].blackTile())
             m4p[i][j] = 0;
+        if(robot.tile[i][j][robot.z].bumper())
+            m4p[i][j] = -2;
+    }
+  }
 
   m4p[objX][objY] = 99;
   m4p[robot.x][robot.y] = 0;
@@ -158,8 +233,14 @@ void Algorithm::startBfs()
 
       if(!algorithmVisiteds[firstCost.a][firstCost.b+1] && m4p[firstCost.a][firstCost.b+1] != -1 && m4p[firstCost.a][firstCost.b+1] != 99 && firstCost.a >= 0 && firstCost.a < 15 && firstCost.b+1 >= 0 && firstCost.b+1 < 15 && !robot.tile[firstCost.a][firstCost.b][robot.z].right())
         {
-          m4p[firstCost.a][firstCost.b+1] = firstCost.node + 1;
-          secondCost.node = firstCost.node + 1;
+          if(m4p[firstCost.a][firstCost.b+1] == -2){
+            m4p[firstCost.a][firstCost.b+1] = firstCost.node + 10;
+            secondCost.node = firstCost.node + 10;
+          }else{
+            m4p[firstCost.a][firstCost.b+1] = firstCost.node + 1;
+            secondCost.node = firstCost.node + 1;
+          }
+          
           secondCost.a = firstCost.a;
           secondCost.b = firstCost.b+1;
           save[firstCost.a][firstCost.b+1] = {firstCost.a, firstCost.b};
@@ -168,8 +249,14 @@ void Algorithm::startBfs()
 
       if(!algorithmVisiteds[firstCost.a][firstCost.b-1] && m4p[firstCost.a][firstCost.b-1] != -1 && m4p[firstCost.a][firstCost.b-1] != 99 && firstCost.a >= 0 && firstCost.a < 15 && firstCost.b-1 >= 0 && firstCost.b-1 < 15 && !robot.tile[firstCost.a][firstCost.b][robot.z].left())
         {
-          m4p[firstCost.a][firstCost.b-1] = firstCost.node + 1;
-          secondCost.node = firstCost.node + 1;
+          if(m4p[firstCost.a][firstCost.b-1] == -2){
+            m4p[firstCost.a][firstCost.b-1] = firstCost.node + 10;
+            secondCost.node = firstCost.node + 10;
+          }else{
+            m4p[firstCost.a][firstCost.b-1] = firstCost.node + 1;
+            secondCost.node = firstCost.node + 1;
+          }
+          
           secondCost.a = firstCost.a;
           secondCost.b = firstCost.b-1;
           save[firstCost.a][firstCost.b-1] = {firstCost.a,firstCost.b};
@@ -178,8 +265,14 @@ void Algorithm::startBfs()
 
       if(!algorithmVisiteds[firstCost.a+1][firstCost.b] && m4p[firstCost.a+1][firstCost.b] != -1 && m4p[firstCost.a+1][firstCost.b] != 99 && firstCost.a+1 >= 0 && firstCost.a+1 < 15 && firstCost.b >= 0 && firstCost.b < 15 && !robot.tile[firstCost.a][firstCost.b][robot.z].down())
         {
-          m4p[firstCost.a+1][firstCost.b] = firstCost.node + 1;
-          secondCost.node = firstCost.node + 1;
+          if(m4p[firstCost.a+1][firstCost.b] == -2){
+            m4p[firstCost.a+1][firstCost.b] = firstCost.node + 10;
+            secondCost.node = firstCost.node + 10;
+          }else{
+            m4p[firstCost.a+1][firstCost.b] = firstCost.node + 1;
+            secondCost.node = firstCost.node + 1;
+          }
+          
           secondCost.a = firstCost.a+1;
           secondCost.b = firstCost.b;
           save[firstCost.a+1][firstCost.b] = {firstCost.a,firstCost.b};
@@ -189,13 +282,12 @@ void Algorithm::startBfs()
       if(!algorithmVisiteds[firstCost.a-1][firstCost.b] && m4p[firstCost.a-1][firstCost.b] != -1 && m4p[firstCost.a-1][firstCost.b] != 99 && firstCost.a-1 >= 0 && firstCost.a-1 < 15 && firstCost.b >= 0 && firstCost.b < 15  && !robot.tile[firstCost.a][firstCost.b][robot.z].up())
         {
           if(m4p[firstCost.a-1][firstCost.b] == -2){
-          //  m4p[firstCost.a-1][firstCost.b] = firstCost.node + 10;
-           // secondCost.node = firstCost.node + 10;
+            m4p[firstCost.a-1][firstCost.b] = firstCost.node + 10;
+            secondCost.node = firstCost.node + 10;
           }else{
             m4p[firstCost.a-1][firstCost.b] = firstCost.node + 1;
             secondCost.node = firstCost.node + 1;
           }
-          
 
           secondCost.a = firstCost.a-1;
           secondCost.b = firstCost.b;
@@ -204,7 +296,7 @@ void Algorithm::startBfs()
         }
     }
 
-   /* for(byte i=0; i<15; i++){
+ /*  for(byte i=0; i<15; i++){
     for(byte j=0;j<15;j++){
       if(m4p[i][j] == -1)
         {
@@ -291,8 +383,7 @@ void Algorithm::findWay()
               {
                 case 'N':
                 {
-                  this -> rightTurn();
-                  this -> rightTurn();
+                  this -> halfTurn();
                 } break;
                 case 'E':
                 {
@@ -320,8 +411,8 @@ void Algorithm::findWay()
                 } break;
                 case 'W':
                 {
-                  this -> rightTurn();
-                  this -> rightTurn();
+                this -> halfTurn();
+
                 } break;
                 case 'S':
                 {
@@ -339,8 +430,8 @@ void Algorithm::findWay()
                     } break;
                     case 'E':
                     {
-                      this -> rightTurn();
-                      this -> rightTurn();
+                      this -> halfTurn();
+
                     } break;
                     case 'W':
                     {
@@ -368,8 +459,7 @@ void Algorithm::findWay()
                       } break;
                       case 'S':
                       {
-                        this -> rightTurn();
-                        this -> rightTurn();
+                   this -> halfTurn();
                       } break;
                     }
                 }
@@ -382,23 +472,22 @@ void Algorithm::findWay()
                 {
                   case 'N':
                   {
-                    this -> rightTurn();
-                    this -> rightTurn();
-                    this -> moveForward(v);
+                  this -> halfTurn();
+                    this -> forwardAlg();
                   } break;
                   case 'E':
                   {
                     this -> rightTurn();
-                    this -> moveForward(v);
+                    this -> forwardAlg();
                   } break;
                   case 'W':
                   {
                     this -> leftTurn();
-                    this -> moveForward(v);
+                    this -> forwardAlg();
                   } break;
                   case 'S':
                   {
-                    this -> moveForward(v);
+                    this -> forwardAlg();
                   } break;
                 }
             }
@@ -409,22 +498,21 @@ void Algorithm::findWay()
                   case 'N':
                   {
                     this -> rightTurn();
-                    this -> moveForward(v);
+                    this -> forwardAlg();
                   } break;
                   case 'E':
                   {
-                    this -> moveForward(v);
+                    this -> forwardAlg();
                   } break;
                   case 'W':
                   {
-                    this -> rightTurn();
-                    this -> rightTurn();
-                    this -> moveForward(v);
+                    this -> halfTurn();
+                    this -> forwardAlg();
                   } break;
                   case 'S':
                   {
                     this -> leftTurn();
-                    this -> moveForward(v);
+                    this -> forwardAlg();
                   } break;
                 }
               }
@@ -435,22 +523,21 @@ void Algorithm::findWay()
                       case 'N':
                       {
                         this -> leftTurn();
-                        this -> moveForward(v);
+                        this -> forwardAlg();
                       } break;
                       case 'E':
                       {
-                        this -> rightTurn();
-                        this -> rightTurn();
-                        this -> moveForward(v);
+                        this -> halfTurn();
+                        this -> forwardAlg();
                       } break;
                       case 'W':
                       {
-                        this -> moveForward(v);
+                        this -> forwardAlg();
                       } break;
                       case 'S':
                       {
                         this -> rightTurn();
-                        this -> moveForward(v);
+                        this -> forwardAlg();
                       } break;
                     }
                 }
@@ -460,23 +547,22 @@ void Algorithm::findWay()
                       {
                         case 'N':
                         {
-                          this -> moveForward(v);
+                          this -> forwardAlg();
                         } break;
                         case 'E':
                         {
                           this -> leftTurn();
-                          this -> moveForward(v);
+                          this -> forwardAlg();
                         } break;
                         case 'W':
                         {
                           this -> rightTurn();
-                          this -> moveForward(v);
+                          this -> forwardAlg();
                         } break;
                         case 'S':
-                        {
-                          this -> rightTurn();
-                          this -> rightTurn();
-                          this -> moveForward(v);
+                        {                  
+                          this -> halfTurn();
+                          this -> forwardAlg();
                         } break;
                       }
                   }
@@ -484,6 +570,111 @@ void Algorithm::findWay()
   }
 }
 
+void Algorithm::forwardAlg()
+{
+    sensors.motors.rightCount = 0;
+
+  int newTic = sensors.motors.tic1;
+  int dE = sensors.getDistanceOf(3);
+  int bb = 0 ;
+  bool fT = true;
+  int crash=0;
+  uint8_t tam = 0;
+  int maxTam=0;
+  int dIn = sensors.getDistanceOf(3);
+  sensors.motors.bumperControl=false;
+
+  if(dIn<18)
+  return;
+  
+  sensors.motors.setBase(230);
+  
+while(sensors.motors.rightCount<newTic)
+{
+ sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(1), sensors.getDistanceOf(2), bb);
+
+      if(sensors.motors.rightCount<(newTic * 0.60))
+       {
+        
+        if(digitalRead(sensors.motors.pin1)==HIGH)
+          {
+            crash++;
+            if(crash==4)return;
+            sensors.motors.choqueDer(sensors.motors.de, 65);
+            sensors.motors.rightCount=0;
+          }
+          if(digitalRead(sensors.motors.pin3)==HIGH)
+          {
+            crash++;
+            if(crash==4)return;
+            sensors.motors.choqueIzq(sensors.motors.de, 65);
+            sensors.motors.rightCount=0;
+          }
+        if(digitalRead(sensors.motors.pin5)==HIGH)
+          {
+            crash++;
+            if(crash==4)return;
+            sensors.motors.choqueIzq(sensors.motors.de, 40);
+            sensors.motors.rightCount=0;
+          }
+        if(digitalRead(sensors.motors.pin4)==HIGH)
+          {
+            crash++;
+            if(crash==4)return;
+            sensors.motors.choqueDer(sensors.motors.de, 40);
+            sensors.motors.rightCount=0;
+          }
+        if(digitalRead(sensors.motors.pin2)==HIGH)
+          {
+            crash++;
+            if(crash==4)return;
+            sensors.motors.choqueDer(sensors.motors.de, 20);
+            sensors.motors.rightCount=0;
+          }
+        if(digitalRead(sensors.motors.pin6)==HIGH)
+          {
+            crash++;
+            if(crash==4)return;
+            sensors.motors.choqueIzq(sensors.motors.de, 20);
+            sensors.motors.rightCount=0;
+          }
+       }
+
+     if(bb>0)
+       {
+        newTic= newTic + bb*24;
+        bb = 0;
+        sensors.motors.bT=true;
+       }
+    
+
+if(!sensors.motors.bumperControl)
+{
+if(sensors.motors.bumper(tam)){
+sensors.motors.bumperControl=true;
+maxTam=tam;
+}
+}
+else if(fT)
+{
+sensors.motors.bumper(tam);
+sensors.motors.bumperControl=true;
+if(tam>=maxTam)
+maxTam = tam;
+else if (fT){
+newTic= newTic+maxTam*70;
+fT=false;
+}
+
+}
+
+}
+sensors.motors.detenerse();
+sensors.motors.checar();
+delay(50);
+sensors.checkDistances();
+sensors.motors.setBase(sensors.motors.velInicial);
+}
 void Algorithm::moveForward(bool &perfect)
 {  
   
@@ -495,6 +686,12 @@ void Algorithm::moveForward(bool &perfect)
    uint8_t tam = 0 ;
    int newTic = sensors.motors.tic1;
    sensors.motors.bT=false;
+   bool vieneDeBumper=false;
+   if( sensors.motors.bumperControl)
+   vieneDeBumper=true;
+   else
+   vieneDeBumper=false;
+   
    sensors.motors.bumperControl=false;
    bool fT = true;
    int aux;
@@ -503,18 +700,28 @@ void Algorithm::moveForward(bool &perfect)
    bool visualV = false;
    bool heatV = false;
    bool trueRamp = false;
-   
-if( diE<= 15)
-  {
-    return;
-  }
+   negroCount  = 0;
+   bool band = false;  
   
-if(sensors.motors.bumper(tam))
+if(sensors.motors.bumper(tam) || vieneDeBumper)
 {
   fT=false;
-  newTic+=tam*50;
+  newTic+=tam*150;
+  
+  if(sensors.motors.bumper(tam))
   sensors.motors.bumperControl=true;
+  
   maxTam=tam;
+  sensors.motors.setBase(240);
+  band=true;
+  robot.tile[robot.x][robot.y][robot.z].bumper(1);
+     digitalWrite(37,HIGH);
+
+  //ACTUAL
+}
+else{
+  sensors.motors.setBase(sensors.motors.velInicial);
+     digitalWrite(37,LOW);
 }
 
 if(visualVictim())
@@ -527,36 +734,52 @@ heatV=true;
     {
 
       //sensors.motors.escribirLetraLCD(camaraChar);
+      if(band)
+      {
+        if(sensors.motors.rightCount >  newTic*0.2)
+         sensors.motors.setBase(195);
+        else if(sensors.motors.rightCount > newTic*0.4)
+          sensors.motors.setBase(sensors.motors.velInicial);
+      }
       
       sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(1), sensors.getDistanceOf(2), bb);
-
+      //blackSquare = sensors.motors.cuadroNegro();
+      //(blackSquare) ? digitalWrite(37, HIGH) : digitalWrite(37, LOW);
       value = sensors.motors.rampa(sensors.motors.de);
 
+      bool s =true;
+
 if(value!=0){
-  unsigned long timeRamp = millis();
+  if(value==1)
+s=true;
+else if(value==2)
+s=false;
 
-      while(sensors.motors.rampa(sensors.motors.de)==1 || sensors.motors.rampa(sensors.motors.de)==2)
+unsigned long mm = millis();
+
+      while(sensors.motors.condRampa(s))
       {
-        
-        if(sensors.motors.rampa(sensors.motors.de)==1)
-       sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(1), sensors.getDistanceOf(2), bb);
-        else
        sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(1), sensors.getDistanceOf(2), bb);
 
-     if(sensors.motors.rightCount>2900)
+     if(sensors.motors.rightCount>3500)
         trueRamp=true;
         else
         trueRamp=false;
+
+       if(millis()>(mm+6000))
+       sensors.motors.setBase(sensors.motors.velInicial+66);
+       
       }
 
 if(trueRamp){
 unsigned long te = millis();
 
-while(millis()<(te+400))
+while(millis()<(te+370))
 sensors.motors.avanzar(sensors.motors.de, sensors.getDistanceOf(1), sensors.getDistanceOf(2), bb);
 
 sensors.motors.detenerse();
-sensors.motors.setBase(155);
+sensors.motors.setBase(sensors.motors.velInicial);
+sensors.motors.girosX=3;
 
 //sensors.motors.actualizaSetPoint(sensors.motors.de);
 //delay(50);
@@ -607,39 +830,46 @@ sensors.motors.setBase(155);
      
       if(sensors.motors.rightCount<(newTic * 0.60))
        {
+        
         if(digitalRead(sensors.motors.pin1)==HIGH)
           {
             crash++;
+            if(crash==4)return;
             sensors.motors.choqueDer(sensors.motors.de, 65);
             sensors.motors.rightCount=0;
           }
           if(digitalRead(sensors.motors.pin3)==HIGH)
           {
             crash++;
+            if(crash==4)return;
             sensors.motors.choqueIzq(sensors.motors.de, 65);
             sensors.motors.rightCount=0;
           }
         if(digitalRead(sensors.motors.pin5)==HIGH)
           {
             crash++;
+            if(crash==4)return;
             sensors.motors.choqueIzq(sensors.motors.de, 40);
             sensors.motors.rightCount=0;
           }
         if(digitalRead(sensors.motors.pin4)==HIGH)
           {
+            crash++;
+            if(crash==4)return;
             sensors.motors.choqueDer(sensors.motors.de, 40);
             sensors.motors.rightCount=0;
-            crash++;
           }
         if(digitalRead(sensors.motors.pin2)==HIGH)
           {
             crash++;
+            if(crash==4)return;
             sensors.motors.choqueDer(sensors.motors.de, 20);
             sensors.motors.rightCount=0;
           }
         if(digitalRead(sensors.motors.pin6)==HIGH)
           {
             crash++;
+            if(crash==4)return;
             sensors.motors.choqueIzq(sensors.motors.de, 20);
             sensors.motors.rightCount=0;
           }
@@ -658,6 +888,20 @@ if(!sensors.motors.bumperControl)
 if(sensors.motors.bumper(tam)){
 sensors.motors.bumperControl=true;
 maxTam=tam;
+if(sensors.motors.rightCount<newTic/2)
+robot.tile[robot.x][robot.y][robot.z].bumper(1);
+else
+  switch(robot.getDirection())
+  {
+    case 'N': robot.tile[robot.x-1][robot.y][robot.z].bumper(1);
+      break;
+    case 'E': robot.tile[robot.x][robot.y+1][robot.z].bumper(1);
+      break;
+    case 'W': robot.tile[robot.x][robot.y-1][robot.z].bumper(1);
+      break;
+    case 'S': robot.tile[robot.x+1][robot.y][robot.z].bumper(1);
+      break;
+  }
 }
 }
 else if(fT)
@@ -667,24 +911,25 @@ sensors.motors.bumperControl=true;
 if(tam>=maxTam)
 maxTam = tam;
 else if (fT){
-newTic= newTic+maxTam*50;
+newTic= newTic+maxTam*70;
 fT=false;
 }
 
 }
 
-
-if(crash>3){  //la cagaste
-sensors.motors.detenerse();
-//perfect=false;
-return;
-}
 }
   sensors.motors.detenerse();
   sensors.motors.checar();
+  delay(200);
 
-  if(maxTam>=2 && sensors.motors.bumperControl)
-  sensors.acomodo(diE,diA);
+  if(sensors.motors.bumperControl || vieneDeBumper)
+   { 
+    sensors.acomodo(diE,diA);
+     digitalWrite(37,HIGH);
+   }
+   else
+     digitalWrite(37,LOW);
+
   
   sensors.checkDistances();
 }
@@ -710,6 +955,9 @@ void Algorithm::rightTurn()
     }
     else
       sensors.motors.girosX++;
+        
+      sensors.checkDistances();
+
 }
 
 void Algorithm::leftTurn()
@@ -730,5 +978,27 @@ void Algorithm::leftTurn()
       }
     else
       sensors.motors.girosX++;
-}
 
+        sensors.checkDistances();
+}
+void Algorithm::halfTurn()
+{
+  robot.changeDirection(1,robot.getDirection());
+  robot.changeDirection(1,robot.getDirection());
+  
+  int n =   sensors.motors.de+180;
+  n= n%360;
+  sensors.motors.de=n;
+  
+    sensors.motors.giro(sensors.motors.de);
+    sensors.motors.detenerse();
+    delay(155);
+
+    sensors.motors.checar();
+
+    if(sensors.getDistanceOf(4) <= 21 && !sensors.motors.bumperControl)
+      {
+      sensors.motors.atrasSN();
+      sensors.motors.girosX=0;
+      } 
+}

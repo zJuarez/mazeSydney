@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <i2cmaster.h>
 #include <LiquidCrystal_I2C.h>
-#include <NewPing.h>
+#include <Ultrasonic.h>
 #include "Control.h"
 
 class SenseMap
@@ -23,8 +23,8 @@ class SenseMap
     void acomodo(double,double);
     void blinkLeds();
     
-    int mlxLeft = 0x55<<1;    
-    int mlxRight = 0x2A<<1; 
+    int mlxRight = 0x55<<1;    
+    int mlxLeft = 0x2A<<1; 
     
    private:
    
@@ -33,4 +33,3 @@ class SenseMap
 };
 
 #endif
-

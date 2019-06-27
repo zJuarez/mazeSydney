@@ -121,27 +121,27 @@ void Priotities::changeSquare(Bit *actualSquare, int rightDistance, int leftDist
     {
       case 'N':
         {
-          (frontDistance > 20 || frontDistance == 0) ? actualSquare -> up(0, &tile[x-1][y][z]) : actualSquare -> up(1, &tile[x-1][y][z]);
-          (rightDistance > 20 || rightDistance == 0) ? actualSquare -> right(0, &tile[x][y+1][z]) : actualSquare -> right(1, &tile[x][y+1][z]);
-          (leftDistance > 20 || leftDistance == 0) ? actualSquare -> left(0, &tile[x][y-1][z]) : actualSquare -> left(1, &tile[x][y-1][z]);
+          (frontDistance > 20) ? actualSquare -> up(0, &tile[x-1][y][z]) : actualSquare -> up(1, &tile[x-1][y][z]);
+          (rightDistance > 20) ? actualSquare -> right(0, &tile[x][y+1][z]) : actualSquare -> right(1, &tile[x][y+1][z]);
+          (leftDistance > 20) ? actualSquare -> left(0, &tile[x][y-1][z]) : actualSquare -> left(1, &tile[x][y-1][z]);
         } break;
       case 'E':
         {
-          (frontDistance > 20 || frontDistance == 0) ? actualSquare -> right(0, &tile[x][y+1][z]) : actualSquare -> right(1, &tile[x][y+1][z]);
-          (rightDistance > 20 || rightDistance == 0) ? actualSquare -> down(0, &tile[x+1][y][z]) : actualSquare -> down(1, &tile[x+1][y][z]);
-          (leftDistance > 20 || leftDistance == 0) ? actualSquare -> up(0, &tile[x-1][y][z]) : actualSquare -> up(1, &tile[x-1][y][z]);
+          (frontDistance > 20) ? actualSquare -> right(0, &tile[x][y+1][z]) : actualSquare -> right(1, &tile[x][y+1][z]);
+          (rightDistance > 20) ? actualSquare -> down(0, &tile[x+1][y][z]) : actualSquare -> down(1, &tile[x+1][y][z]);
+          (leftDistance > 20) ? actualSquare -> up(0, &tile[x-1][y][z]) : actualSquare -> up(1, &tile[x-1][y][z]);
         } break;
       case 'W':
         {
-          (frontDistance > 20 || frontDistance == 0) ? actualSquare -> left(0, &tile[x][y-1][z]) : actualSquare -> left(1, &tile[x][y-1][z]);
-          (rightDistance > 20 || rightDistance == 0) ? actualSquare -> up(0, &tile[x-1][y][z]) : actualSquare -> up(1, &tile[x-1][y][z]);
-          (leftDistance > 20 || leftDistance == 0) ? actualSquare -> down(0, &tile[x+1][y][z]) : actualSquare -> down(1, &tile[x+1][y][z]);
+          (frontDistance > 20) ? actualSquare -> left(0, &tile[x][y-1][z]) : actualSquare -> left(1, &tile[x][y-1][z]);
+          (rightDistance > 20) ? actualSquare -> up(0, &tile[x-1][y][z]) : actualSquare -> up(1, &tile[x-1][y][z]);
+          (leftDistance > 20) ? actualSquare -> down(0, &tile[x+1][y][z]) : actualSquare -> down(1, &tile[x+1][y][z]);
         } break;
       case 'S':
         {
-          (frontDistance > 20 || frontDistance == 0) ? actualSquare -> down(0, &tile[x+1][y][z]) : actualSquare -> down(1, &tile[x+1][y][z]);
-          (rightDistance > 20 || rightDistance == 0) ? actualSquare -> left(0, &tile[x][y-1][z]) : actualSquare -> left(1, &tile[x][y-1][z]);
-          (leftDistance > 20 || leftDistance == 0) ? actualSquare -> right(0, &tile[x][y+1][z]) : actualSquare -> right(1, &tile[x][y+1][z]);
+          (frontDistance > 20) ? actualSquare -> down(0, &tile[x+1][y][z]) : actualSquare -> down(1, &tile[x+1][y][z]);
+          (rightDistance > 20) ? actualSquare -> left(0, &tile[x][y-1][z]) : actualSquare -> left(1, &tile[x][y-1][z]);
+          (leftDistance > 20) ? actualSquare -> right(0, &tile[x][y+1][z]) : actualSquare -> right(1, &tile[x][y+1][z]);
         } break;
     }
 }
@@ -160,123 +160,441 @@ void Priotities::changeStatus(Bit *actualSquare, char dir)
   if(!actualSquare -> down())
     tile[x+1][y][z].exist(1);
 
-  if(!actualSquare -> up() && !tile[x-1][y][z].visited() && !tile[x-1][y][z].pending())
+  switch(dir)
   {
-    tile[x-1][y][z].pending(1);
+    case 'N':
+    {
+      if(!actualSquare -> right() && !tile[x][y+1][z].visited())
+      {
+        if(!actualSquare -> left() && !tile[x][y-1][z].visited())
+        {
+          tile[x][y-1][z].pending(1);
 
-    if(z == 0)
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x;
+            fFys[firstCount] = y-1;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x;
+            sFys[secondCount] = y-1;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x;
+            tFys[thirdCount] = y-1;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x;
+            fhFys[fourthCount] = y-1;
+
+            fourthCount++;
+          }
+        }
+        if(!actualSquare -> up() && !tile[x-1][y][z].visited())
+        {
+          tile[x-1][y][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x-1;
+            fFys[firstCount] = y;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x-1;
+            sFys[secondCount] = y;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x-1;
+            tFys[thirdCount] = y;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x-1;
+            fhFys[fourthCount] = y;
+
+            fourthCount++;
+          }
+        }
+      }
+      else if(!actualSquare -> up() && !tile[x-1][y][z].visited())
+      {
+        if(!actualSquare -> left() && !tile[x][y-1][z].visited())
+        {
+          tile[x][y-1][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x;
+            fFys[firstCount] = y-1;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x;
+            sFys[secondCount] = y-1;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x;
+            tFys[thirdCount] = y-1;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x;
+            fhFys[fourthCount] = y-1;
+
+            fourthCount++;
+          }
+        }
+      }
+    } break;
+    case 'E':
     {
-      fFxs[firstCount] = x-1;
-      fFys[firstCount] = y;
-      firstCount++;
-    }
-    else if(z == 1)
+      if(!actualSquare -> down() && !tile[x+1][y][z].visited())
+      {
+        if(!actualSquare -> up() && !tile[x-1][y][z].visited())
+        {
+          tile[x-1][y][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x-1;
+            fFys[firstCount] = y;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x-1;
+            sFys[secondCount] = y;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x-1;
+            tFys[thirdCount] = y;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x-1;
+            fhFys[fourthCount] = y;
+
+            fourthCount++;
+          }
+        }
+        if(!actualSquare -> right() && !tile[x][y+1][z].visited())
+        {
+          tile[x][y+1][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x;
+            fFys[firstCount] = y+1;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x;
+            sFys[secondCount] = y+1;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x;
+            tFys[thirdCount] = y+1;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x;
+            fhFys[fourthCount] = y+1;
+
+            fourthCount++;
+          }
+        }
+      }
+      else if(!actualSquare -> right() && !tile[x][y+1][z].visited())
+      {
+        if(!actualSquare -> up() && !tile[x-1][y][z].visited())
+        {
+          tile[x-1][y][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x-1;
+            fFys[firstCount] = y;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x-1;
+            sFys[secondCount] = y;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x-1;
+            tFys[thirdCount] = y;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x-1;
+            fhFys[fourthCount] = y;
+
+            fourthCount++;
+          }
+        }
+      }
+    } break;
+    case 'W':
     {
-      sFxs[secondCount] = x-1;
-      sFys[secondCount] = y;
-      secondCount++;
-    }
-    else if(z == 2)
+      if(!actualSquare -> up() && !tile[x-1][y][z].visited())
+      {
+        if(!actualSquare -> down() && !tile[x+1][y][z].visited())
+        {
+          tile[x+1][y][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x+1;
+            fFys[firstCount] = y;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x+1;
+            sFys[secondCount] = y;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x+1;
+            tFys[thirdCount] = y;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x+1;
+            fhFys[fourthCount] = y;
+
+            fourthCount++;
+          }
+        }
+        if(!actualSquare -> left() && !tile[x][y-1][z].visited())
+        {
+          tile[x][y-1][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x;
+            fFys[firstCount] = y-1;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x;
+            sFys[secondCount] = y-1;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x;
+            tFys[thirdCount] = y-1;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x;
+            fhFys[fourthCount] = y-1;
+
+            fourthCount++;
+          }
+        }
+      }
+      else if(!actualSquare -> left() && !tile[x][y-1][z].visited())
+      {
+        if(!actualSquare -> down() && !tile[x+1][y][z].visited())
+        {
+          tile[x+1][y][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x+1;
+            fFys[firstCount] = y;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x+1;
+            sFys[secondCount] = y;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x+1;
+            tFys[thirdCount] = y;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x+1;
+            fhFys[fourthCount] = y;
+
+            fourthCount++;
+          }
+        }
+      }
+    } break;
+    case 'S':
     {
-      tFxs[thirdCount] = x-1;
-      tFys[thirdCount] = y;
-      thirdCount++;
-    }
-    else if(z == 3)
-    {
-      fhFxs[fourthCount] = x-1;
-      fhFys[fourthCount] = y;
-      fourthCount++;
-    }
+      if(!actualSquare -> left() && !tile[x][y-1][z].visited())
+      {
+        if(!actualSquare -> right() && !tile[x][y+1][z].visited())
+        {
+          tile[x][y+1][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x;
+            fFys[firstCount] = y+1;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x;
+            sFys[secondCount] = y+1;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x;
+            tFys[thirdCount] = y+1;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x;
+            fhFys[fourthCount] = y+1;
+
+            fourthCount++;
+          }
+        }
+        if(!actualSquare -> down() && !tile[x+1][y][z].visited())
+        {
+          tile[x+1][y][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x+1;
+            fFys[firstCount] = y;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x+1;
+            sFys[secondCount] = y;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x+1;
+            tFys[thirdCount] = y;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x+1;
+            fhFys[fourthCount] = y;
+
+            fourthCount++;
+          }
+        }
+      }
+      else if(!actualSquare -> down() && !tile[x+1][y][z].visited())
+      {
+        if(!actualSquare -> right() && !tile[x][y+1][z].visited())
+        {
+          tile[x][y+1][z].pending(1);
+
+          if(z == 0)
+          {            
+            fFxs[firstCount] = x;
+            fFys[firstCount] = y+1;
+
+            firstCount++;
+          }
+          else if(z == 1)
+          {
+            sFxs[secondCount] = x;
+            sFys[secondCount] = y+1;
+
+            secondCount++;
+          }
+          else if(z == 2)
+          {
+            tFxs[thirdCount] = x;
+            tFys[thirdCount] = y+1;
+
+            thirdCount++;
+          }
+          else if(z == 3)
+          {
+            fhFxs[fourthCount] = x;
+            fhFys[fourthCount] = y+1;
+
+            fourthCount++;
+          }
+        }
+      }
+    } break;
   }
-  if(!actualSquare -> right() && !tile[x][y+1][z].visited() && !tile[x][y+1][z].pending())
-  {
-    tile[x][y+1][z].pending(1);
-
-    if(z == 0)
-    {
-      fFxs[firstCount] = x;
-      fFys[firstCount] = y+1;
-      firstCount++;
-    }
-    else if(z == 1)
-    {
-      sFxs[secondCount] = x;
-      sFys[secondCount] = y+1;
-      secondCount++;
-    }
-    else if(z == 2)
-    {
-      tFxs[thirdCount] = x;
-      tFys[thirdCount] = y+1;
-      thirdCount++;
-    }
-    else if(z == 3)
-    {
-      fhFxs[fourthCount] = x;
-      fhFys[fourthCount] = y+1;
-      fourthCount++;
-    }
-  }
-  if(!actualSquare -> left() && !tile[x][y-1][z].visited() && !tile[x][y-1][z].pending())
-  {
-    tile[x][y-1][z].pending(1);
-
-    if(z == 0)
-    {
-      fFxs[firstCount] = x;
-      fFys[firstCount] = y-1;
-      firstCount++;
-    }
-    else if(z == 1)
-    {
-      sFxs[secondCount] = x;
-      sFys[secondCount] = y-1;
-      secondCount++;
-    }
-    else if(z == 2)
-    {
-      tFxs[thirdCount] = x;
-      tFys[thirdCount] = y-1;
-      thirdCount++;
-    }
-    else if(z == 3)
-    {
-      fhFxs[fourthCount] = x;
-      fhFys[fourthCount] = y-1;
-      fourthCount++;
-    }
-  }
-  if(!actualSquare -> down() && !tile[x+1][y][z].visited() && !tile[x+1][y][z].pending())
-  {
-    tile[x+1][y][z].pending(1);
-
-    if(z == 0)
-    {
-      fFxs[firstCount] = x+1;
-      fFys[firstCount] = y;
-      firstCount++;
-    }
-    else if(z == 1)
-    {
-      sFxs[secondCount] = x+1;
-      sFys[secondCount] = y;
-      secondCount++;
-    }
-    else if(z == 2)
-    {
-      tFxs[thirdCount] = x+1;
-      tFys[thirdCount] = y;
-      thirdCount++;
-    }
-    else if(z == 3)
-    {
-      fhFxs[fourthCount] = x+1;
-      fhFys[fourthCount] = y;
-      fourthCount++;
-    }
-  }
-
 }
 
 void Priotities::changeCoordinates(char dir)
@@ -293,18 +611,14 @@ void Priotities::changeCoordinates(char dir)
       break;
     }
 
- /* if(x == -1){
+ /* if(x == -1)
     this -> dataTransferUp();
-    prueba = 1;}
-  else if(x == 15){
+  else if(x == 15)
     this -> dataTransferDown();
-    prueba = 2;}
-  else if(y == -1){
+  else if(y == -1)
     this -> dataTransferLeft();
-    prueba = 3;}
-  else if(y == 15){
-    this -> dataTransferRight();
-    prueba = 4;}*/
+  else if(y == 15)
+    this -> dataTransferRight();*/
 }
 
 void Priotities::correction(char dir)
@@ -354,7 +668,7 @@ void Priotities::dataTransferUp()
 {
    for(int i = -1; i < 15; i++)
    {
-     for(int j = -1; j < 15; j++)
+     for(int j = 0; j < 15; j++)
      {
        tile[i+1][j][z].setInf1(tile[i][j][z].getInf1());
        tile[i+1][j][z].setInf2(tile[i][j][z].getInf2());
@@ -362,7 +676,7 @@ void Priotities::dataTransferUp()
    }
 
    x = 0;
-   startX += 1;
+   startX++;
 
    if(z == 0)
    {
@@ -390,7 +704,7 @@ void Priotities::dataTransferDown()
 {
   for(int i = 0; i < 16; i++)
    {
-     for(int j = 0; j < 16; j++)
+     for(int j = 0; j < 15; j++)
      {
        tile[i-1][j][z].setInf1(tile[i][j][z].getInf1());
        tile[i-1][j][z].setInf2(tile[i][j][z].getInf2());
@@ -398,7 +712,7 @@ void Priotities::dataTransferDown()
    }
 
    x = 14;
-   startX -= 1;
+   startX --;
 
    if(z == 0)
    {
@@ -424,7 +738,7 @@ void Priotities::dataTransferDown()
 
 void Priotities::dataTransferRight()
 {
-  for(int i = 0; i < 16; i++)
+  for(int i = 0; i < 15; i++)
    {
      for(int j = 0; j < 16; j++)
      {
@@ -434,7 +748,7 @@ void Priotities::dataTransferRight()
    }
 
    y = 14;
-   startY -= 1;
+   startY--;
 
    if(z == 0)
    {
@@ -460,7 +774,7 @@ void Priotities::dataTransferRight()
 
 void Priotities::dataTransferLeft()
 {
-  for(int i = -1; i < 15; i++)
+  for(int i = 0; i < 15; i++)
    {
      for(int j = -1; j < 15; j++)
      {
@@ -470,7 +784,7 @@ void Priotities::dataTransferLeft()
    }
 
    y = 0;
-   startY += 1;
+   startY ++;
 
    if(z == 0)
    {
@@ -509,6 +823,7 @@ void Priotities::dataTransferUpFloor()
    }
 
    z = 3;
+   startZ--;
 
    for(int i = 0; i < 100; i++)
    {
@@ -538,6 +853,7 @@ void Priotities::dataTransferDownFloor()
    }
 
    z = 0;
+   startZ++;
 
    for(int i = 0; i < 100; i++)
    {
@@ -551,4 +867,3 @@ void Priotities::dataTransferDownFloor()
    fourthCount = thirdCount;
    firstCount = 0;
 }
-

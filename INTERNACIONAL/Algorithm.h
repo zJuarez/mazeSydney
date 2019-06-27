@@ -39,6 +39,12 @@ class Algorithm
     void moveForward(bool& perfect);
     byte objX, objY;
     void setup();
+    void forwardAlg();
+    bool visualVictim1();
+    void halfTurn();
+
+    bool blackSquare = false;
+    int negroCount = 0;
     
   private:
 
@@ -53,4 +59,3 @@ class Algorithm
 };
 
 #endif
-
